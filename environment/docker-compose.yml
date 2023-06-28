@@ -69,6 +69,8 @@ services:
     container_name: sentinel
     ports:
       - 8858:8858
+    environment:
+      JAVA_OPTS: "-Xmx256m -Xms256m"
     networks:
       - kayson-network
   nacos:

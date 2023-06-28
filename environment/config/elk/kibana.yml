@@ -4,6 +4,9 @@
 ## Default Kibana configuration from Kibana base image.
 ## https://github.com/elastic/kibana/blob/master/src/dev/build/tasks/os_packages/docker_generator/templates/kibana_yml.template.ts
 #
+# fix -> server.publicBaseUrl is missing and should be configured when running in a production environment. Some features may not behave correctly.
+server.publicBaseUrl: "http://kibana:5601"
+
 server.host: 0.0.0.0
 elasticsearch.hosts: [ "http://elasticsearch:9200" ]
 monitoring.ui.container.elasticsearch.enabled: false
