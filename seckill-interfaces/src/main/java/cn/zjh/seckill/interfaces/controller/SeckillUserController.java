@@ -24,10 +24,15 @@ public class SeckillUserController {
     @Resource
     private SeckillUserService seckillUserService;
     
-    @RequestMapping(value = "/get", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/get0", method = {RequestMethod.GET, RequestMethod.POST})
     public ResponseMessage<SeckillUser> getUser(@RequestParam(value = "username") String username) {
         SeckillUser user = seckillUserService.getSeckillUserByUserName(username);
         return ResponseMessageBuilder.build(HttpCode.SUCCESS.getCode(), user);
+    }
+    
+    @GetMapping("/get")
+    public ResponseMessage<SeckillUser> getUser(@RequestAttribute Long userId) {
+        return ResponseMessageBuilder.build(HttpCode.SUCCESS.getCode(), seckillUserService.getSeckillUserByUserId(userId));
     }
     
     @PostMapping("/login")

@@ -13,11 +13,16 @@ import javax.annotation.Resource;
 public class RedisServiceImpl implements RedisService {
     
     @Resource
-    private RedisTemplate<String, Object> RedisTemplate;
+    private RedisTemplate<String, Object> redisTemplate;
     
     @Override
     public void set(String key, Object value) {
-        RedisTemplate.opsForValue().set(key, value);
+        redisTemplate.opsForValue().set(key, value);
     }
-    
+
+    @Override
+    public Object get(String key) {
+        return redisTemplate.opsForValue().get(key);
+    }
+
 }

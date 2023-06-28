@@ -14,5 +14,13 @@ public interface RedisService {
      * @param value 值
      */
     void set(String key, Object value);
+
+    /**
+     * 根据key获取数据
+     * 
+     * @param key 键
+     * @return 值
+     */
+    Object get(String key);
     
 }

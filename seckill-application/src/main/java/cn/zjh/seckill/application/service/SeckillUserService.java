@@ -18,6 +18,14 @@ public interface SeckillUserService {
     SeckillUser getSeckillUserByUserName(String userName);
 
     /**
+     * 根据用户id获取用户信息
+     * 
+     * @param userId 用户id
+     * @return 用户信息
+     */
+    SeckillUser getSeckillUserByUserId(Long userId);
+
+    /**
      * 登录
      * 
      * @param userName 用户名
