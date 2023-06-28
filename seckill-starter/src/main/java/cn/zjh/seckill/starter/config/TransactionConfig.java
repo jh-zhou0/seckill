@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @MapperScan(value = {"cn.zjh.seckill.infrastructure.mapper"})
 @ComponentScan(value = {"cn.zjh.seckill"})
 @PropertySource(value = {"classpath:properties/jdbc.properties", "classpath:properties/mybatis.properties"})
-@Import({JdbcConfig.class, MyBatisConfig.class})
+@Import({JdbcConfig.class, MyBatisConfig.class, RedisConfig.class})
 @EnableTransactionManagement(proxyTargetClass = true)
 public class TransactionConfig {
 

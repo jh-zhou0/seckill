@@ -16,5 +16,14 @@ public interface SeckillUserService {
      * @return 用户信息
      */
     SeckillUser getSeckillUserByUserName(String userName);
+
+    /**
+     * 登录
+     * 
+     * @param userName 用户名
+     * @param password 密码
+     * @return token
+     */
+    String login(String userName, String password);
     
 }
