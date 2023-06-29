@@ -1,4 +1,4 @@
-package cn.zjh.seckill.domain.model;
+package cn.zjh.seckill.domain.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -7,13 +7,11 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * 秒杀活动
- * 
  * @author zjh - kayson
  */
-public class SeckillActivity implements Serializable {
+public class SeckillActivityDTO implements Serializable {
 
-    private static final long serialVersionUID = -7079319520596736847L;
+    private static final long serialVersionUID = 1507710823959609002L;
     
     // 活动id
     private Long id;
@@ -27,7 +25,7 @@ public class SeckillActivity implements Serializable {
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+08:00")
     private Date endTime;
-    // 活动状态 0：已发布； 1：上线； 2：下线
+    // 活动状态 0：已发布； 1：上线； -1：下线
     private Integer status;
     // 活动描述
     private String activityDesc;
@@ -79,5 +77,5 @@ public class SeckillActivity implements Serializable {
     public void setActivityDesc(String activityDesc) {
         this.activityDesc = activityDesc;
     }
-
+    
 }
