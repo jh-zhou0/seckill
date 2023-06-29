@@ -1,4 +1,4 @@
-package cn.zjh.seckill.domain.model;
+package cn.zjh.seckill.domain.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -8,13 +8,13 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 /**
- * 秒杀商品
+ * 商品
  * 
  * @author zjh - kayson
  */
-public class SeckillGoods implements Serializable {
-    
-    private static final long serialVersionUID = -8447592991812016065L;
+public class SeckillGoodsDTO implements Serializable {
+
+    private static final long serialVersionUID = 8084686081356925122L;
     
     // 数据id
     private Long id;
@@ -44,7 +44,7 @@ public class SeckillGoods implements Serializable {
     private String description;
     // 图片
     private String imgUrl;
-    // 秒杀状态 0：已发布； 1：上线； 2：下线
+    // 秒杀状态 0：已发布； 1：上线； -1：下线
     private Integer status;
 
     public Long getId() {
