@@ -41,8 +41,8 @@ public class SeckillGoodsServiceImpl implements SeckillGoodsService {
         SeckillGoods seckillGoods = new SeckillGoods();
         BeanUtil.copyProperties(seckillGoodsDTO, seckillGoods);
         seckillGoods.setId(SnowFlakeFactory.getSnowFlake().nextId());
-        seckillGoods.setStartTime(seckillGoodsDTO.getStartTime());
-        seckillGoods.setEndTime(seckillGoodsDTO.getEndTime());
+        seckillGoods.setStartTime(seckillActivity.getStartTime());
+        seckillGoods.setEndTime(seckillActivity.getEndTime());
         seckillGoods.setAvailableStock(seckillGoodsDTO.getInitialStock());
         seckillGoods.setStatus(SeckillGoodsStatus.PUBLISHED.getCode());
         return seckillGoodsRepository.saveSeckillGoods(seckillGoods);

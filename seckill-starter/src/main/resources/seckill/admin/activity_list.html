@@ -158,13 +158,17 @@
 
 	//查看商品
 	function getGoods(activityId){
-		//TODO 后续实现
-		alert("查看商品")
+		window.location.href="goods_list.html?activityId=" + activityId;
 	}
 	//添加商品
 	function submitGoods(data){
-		//TODO 后续实现
-		alert("添加商品")
+		var id = $(data).attr("data-id");
+		var endTime = $(data).attr("data-end-time");
+		if (currentTime() > endTime){
+			alert("秒杀活动已经结束，不能发布商品");
+			return;
+		}
+		window.location.href="create_goods.html?activityId=" + id;
 	}
 	//添加活动
 	function submitActivity(){
