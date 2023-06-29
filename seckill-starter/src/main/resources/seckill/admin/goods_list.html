@@ -104,10 +104,10 @@
     function showButton(itemVO){
         var innerHtml = "";
         if(itemVO.status == 0){
-            innerHtml += "<input type='button' value='上线' onclick='onlineGoods(" + itemVO.id + ")'/>";
+            innerHtml += "<input type='button' value='上线' onclick='onlineGoods(\"" + itemVO.id + "\")'/>";
         }else if (itemVO.status == 1){
-            console.log("itemVO.id:", itemVO.id)
-            innerHtml += "<input type='button' value='下线' onclick='offlineGoods(" + itemVO.id + ")'/>";
+            // console.log("itemVO.id:", itemVO.id)
+            innerHtml += "<input type='button' value='下线' onclick='offlineGoods(\"" + itemVO.id + "\")'/>";
         }
         return innerHtml;
     }
@@ -145,7 +145,7 @@
     }
     //下线商品
     function offlineGoods(id){
-        console.log("============id: ", id)
+        // console.log("============id: ", id)
         $.ajax({
             type:"GET",
             headers:{

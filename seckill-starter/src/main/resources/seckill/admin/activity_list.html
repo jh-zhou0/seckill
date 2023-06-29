@@ -89,14 +89,14 @@
 		var innerHtml = "";
 		if(itemVO.status == 0){
 			innerHtml += "<input type='button' data-id='"+ itemVO.id +"' data-start-time='"+ itemVO.startTime +"' data-end-time='"+ itemVO.endTime +"' value='发布商品' onclick='submitGoods(this)'/>" +
-			"<input type='button' value='查看商品' onclick='getGoods(" + itemVO.id + ")'/>" +
-			"<input type='button' value='上线' onclick='onlineActivity(" + itemVO.id + ")'/>";
+			"<input type='button' value='查看商品' onclick='getGoods(\"" + itemVO.id + "\")'/>" +
+			"<input type='button' value='上线' onclick='onlineActivity(\"" + itemVO.id + "\")'/>";
 		}else if (itemVO.status == 1){
 			innerHtml += "<input type='button' data-id='"+ itemVO.id +"' data-start-time='"+ itemVO.startTime +"' data-end-time='"+ itemVO.endTime +"' value='发布商品' onclick='submitGoods(this)'/>" +
-					"<input type='button' value='查看商品' onclick='getGoods(" + itemVO.id + ")'/>" +
-					"<input type='button' value='下线' onclick='offlineActivity(" + itemVO.id + ")'/>";
+					"<input type='button' value='查看商品' onclick='getGoods(\"" + itemVO.id + "\")'/>" +
+					"<input type='button' value='下线' onclick='offlineActivity(\"" + itemVO.id + "\")'/>";
 		}else {
-			innerHtml += "<input type='button' value='查看商品' onclick='getGoods(" + itemVO.id + ")'/>"
+			innerHtml += "<input type='button' value='查看商品' onclick='getGoods(\"" + itemVO.id + "\")'/>"
 		}
 		return innerHtml;
 	}
