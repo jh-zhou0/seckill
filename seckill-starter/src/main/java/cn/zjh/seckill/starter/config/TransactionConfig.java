@@ -2,6 +2,7 @@ package cn.zjh.seckill.starter.config;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import org.mybatis.spring.annotation.MapperScan;
+import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.context.annotation.*;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.TransactionManager;
@@ -17,6 +18,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @ComponentScan(value = {"cn.zjh.seckill"})
 @PropertySource(value = {"classpath:properties/jdbc.properties", "classpath:properties/mybatis.properties"})
 @Import({JdbcConfig.class, MyBatisConfig.class, RedisConfig.class})
+@ServletComponentScan(basePackages = {"cn.zjh.seckill"})
 @EnableTransactionManagement(proxyTargetClass = true)
 public class TransactionConfig {
 

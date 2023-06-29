@@ -1,8 +1,8 @@
-var g_host="127.0.0.1:8080";
+var g_host="localhost:8080";
 
 var common_localstorage_key = "common_localstorage_key";
 
-var base_image_url = "http://localhost:10001/htmlStable"
+var base_image_url = "http://localhost:8888/seckill"
 
 function currentTime(){
     var time = new Date();
@@ -39,15 +39,6 @@ function dateFormat(dateTime){
         return dateTime;
     }
 }
-
-function showDateFormat(dateTime){
-    dateTime = dateFormat(dateTime);
-    if (dateTime.indexOf(".") != -1){
-        dateTime =  dateTime.split(".")[0]
-    }
-    return dateTime;
-}
-
 
 function getParameterByName(name, url = window.location.href) {
     name = name.replace(/[\[\]]/g, '\\$&');
