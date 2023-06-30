@@ -33,7 +33,7 @@ public class SeckillActivityServiceImpl implements SeckillActivityService {
         }
         SeckillActivity seckillActivity = new SeckillActivity();
         BeanUtil.copyProperties(seckillActivityDTO, seckillActivity);
-        seckillActivity.setId(SnowFlakeFactory.getSnowFlake().nextId());
+        seckillActivity.setId(SnowFlakeFactory.getSnowFlakeFromCache().nextId());
         seckillActivity.setStatus(SeckillActivityStatus.PUBLISHED.getCode());
         return seckillActivityRepository.saveSeckillActivity(seckillActivity);
     }
