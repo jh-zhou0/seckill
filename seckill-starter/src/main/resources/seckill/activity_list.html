@@ -85,13 +85,12 @@
 
 
     function showButton(itemVO){
-        return "<input type='button' value='查看商品' onclick='getGoods(" + itemVO.id + ")'/>";
+        return "<input type='button' value='查看商品' onclick='getGoods(\"" + itemVO.id + "\")'/>";
     }
 
     //查看商品
     function getGoods(activityId){
-        //TODO 后续完善
-        alert("查看商品")
+        window.location.href="goods_list.html?activityId=" + activityId;
     }
 
     //显示状态
