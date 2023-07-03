@@ -23,11 +23,11 @@ public class SeckillActivityRepositoryImpl implements SeckillActivityRepository 
     private SeckillActivityMapper seckillActivityMapper;
     
     @Override
-    public int saveSeckillActivity(SeckillActivity seckillActivity) {
+    public void saveSeckillActivity(SeckillActivity seckillActivity) {
         if (seckillActivity == null) {
             throw new SeckillException(HttpCode.PARAMS_INVALID);
         }
-        return seckillActivityMapper.saveSeckillActivity(seckillActivity);
+        seckillActivityMapper.saveSeckillActivity(seckillActivity);
     }
 
     @Override

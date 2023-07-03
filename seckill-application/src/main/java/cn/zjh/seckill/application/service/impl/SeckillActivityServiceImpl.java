@@ -1,6 +1,8 @@
 package cn.zjh.seckill.application.service.impl;
 
+import cn.zjh.seckill.application.builder.common.activity.SeckillActivityBuilder;
 import cn.zjh.seckill.application.cache.model.SeckillBusinessCache;
+import cn.zjh.seckill.application.cache.service.activity.SeckillActivityCacheService;
 import cn.zjh.seckill.application.cache.service.activity.SeckillActivityListCacheService;
 import cn.zjh.seckill.application.service.SeckillActivityService;
 import cn.zjh.seckill.domain.code.HttpCode;
@@ -30,6 +32,8 @@ public class SeckillActivityServiceImpl implements SeckillActivityService {
     private SeckillActivityRepository seckillActivityRepository;
     @Resource
     private SeckillActivityListCacheService seckillActivityListCacheService;
+    @Resource
+    private SeckillActivityCacheService seckillActivityCacheService;
     
     @Override
     public void saveSeckillActivityDTO(SeckillActivityDTO seckillActivityDTO) {
@@ -80,6 +84,25 @@ public class SeckillActivityServiceImpl implements SeckillActivityService {
             seckillActivityDTO.setVersion(seckillActivityListCache.getVersion());
             return seckillActivityDTO;
         }).collect(Collectors.toList());
+    }
+
+    @Override
+    public SeckillActivityDTO getSeckillActivity(Long id, Long version) {
+        if (id == null) {
+            throw new SeckillException(HttpCode.PARAMS_INVALID);
+        }
+        SeckillBusinessCache<SeckillActivity> seckillActivityCache  = seckillActivityCacheService.getCachedSeckillActivity(id, version);
+        // 缓存中的活动不存在
+        if (!seckillActivityCache.isExist()) {
+            throw new SeckillException(HttpCode.ACTIVITY_NOT_EXISTS);
+        }
+        // 稍后再试，前端需要对这个状态做特殊处理，即不去刷新数据，静默稍后再试
+        if (seckillActivityCache.isRetryLater()) {
+            throw new SeckillException(HttpCode.RETRY_LATER);
+        }
+        SeckillActivityDTO seckillActivityDTO = SeckillActivityBuilder.toSeckillActivityDTO(seckillActivityCache.getData());
+        seckillActivityDTO.setVersion(seckillActivityCache.getVersion());
+        return seckillActivityDTO;
     }
 
 }

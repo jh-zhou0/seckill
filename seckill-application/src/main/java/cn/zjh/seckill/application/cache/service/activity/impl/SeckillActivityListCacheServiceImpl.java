@@ -102,7 +102,7 @@ public class SeckillActivityListCacheServiceImpl implements SeckillActivityListC
         DistributedLock lock = distributedLockFactory.getDistributedLock(SECKILL_ACTIVITIES_UPDATE_CACHE_LOCK_KEY.concat(String.valueOf(status)));
         try {
             boolean isLockSuccess = lock.tryLock(1, 5, TimeUnit.SECONDS);
-            // 1.获取分布式锁失败，稍后重试
+            // 1.获取分布式锁失败，稍后重试，未获取到分布式锁的线程快速返回，不占用系统资源
             if (!isLockSuccess) {
                 return new SeckillBusinessCache<List<SeckillActivity>>().retryLater();
             }

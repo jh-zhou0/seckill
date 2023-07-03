@@ -15,7 +15,7 @@ public interface SeckillActivityRepository {
     /**
      * 保存活动信息
      */
-    int saveSeckillActivity(SeckillActivity seckillActivity);
+    void saveSeckillActivity(SeckillActivity seckillActivity);
 
     /**
      * 根据状态获取活动列表
