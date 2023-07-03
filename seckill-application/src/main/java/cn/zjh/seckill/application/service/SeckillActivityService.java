@@ -16,7 +16,7 @@ public interface SeckillActivityService {
     /**
      * 保存活动信息
      */
-    int saveSeckillActivityDTO(SeckillActivityDTO seckillActivityDTO);
+    void saveSeckillActivityDTO(SeckillActivityDTO seckillActivityDTO);
 
     /**
      * 根据状态获取活动列表
@@ -37,5 +37,10 @@ public interface SeckillActivityService {
      * 修改状态
      */
     int updateStatus(Integer status, Long id);
-    
+
+    /**
+     * 活动列表
+     */
+    List<SeckillActivityDTO> getSeckillActivityList(Integer status, Long version);
+
 }

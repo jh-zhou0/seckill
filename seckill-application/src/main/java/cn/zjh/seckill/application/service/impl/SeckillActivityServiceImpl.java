@@ -1,5 +1,7 @@
 package cn.zjh.seckill.application.service.impl;
 
+import cn.zjh.seckill.application.cache.model.SeckillBusinessCache;
+import cn.zjh.seckill.application.cache.service.activity.SeckillActivityListCacheService;
 import cn.zjh.seckill.application.service.SeckillActivityService;
 import cn.zjh.seckill.domain.code.HttpCode;
 import cn.zjh.seckill.domain.dto.SeckillActivityDTO;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 活动
@@ -25,9 +28,11 @@ public class SeckillActivityServiceImpl implements SeckillActivityService {
     
     @Resource
     private SeckillActivityRepository seckillActivityRepository;
+    @Resource
+    private SeckillActivityListCacheService seckillActivityListCacheService;
     
     @Override
-    public int saveSeckillActivityDTO(SeckillActivityDTO seckillActivityDTO) {
+    public void saveSeckillActivityDTO(SeckillActivityDTO seckillActivityDTO) {
         if (seckillActivityDTO == null) {
             throw new SeckillException(HttpCode.PARAMS_INVALID);
         }
@@ -35,7 +40,7 @@ public class SeckillActivityServiceImpl implements SeckillActivityService {
         BeanUtil.copyProperties(seckillActivityDTO, seckillActivity);
         seckillActivity.setId(SnowFlakeFactory.getSnowFlakeFromCache().nextId());
         seckillActivity.setStatus(SeckillActivityStatus.PUBLISHED.getCode());
-        return seckillActivityRepository.saveSeckillActivity(seckillActivity);
+        seckillActivityRepository.saveSeckillActivity(seckillActivity);
     }
 
     @Override
@@ -57,5 +62,24 @@ public class SeckillActivityServiceImpl implements SeckillActivityService {
     public int updateStatus(Integer status, Long id) {
         return seckillActivityRepository.updateStatus(status, id);
     }
-    
+
+    @Override
+    public List<SeckillActivityDTO> getSeckillActivityList(Integer status, Long version) {
+        SeckillBusinessCache<List<SeckillActivity>> seckillActivityListCache = seckillActivityListCacheService.getCachedActivities(status, version);
+        // 活动不存在
+        if (!seckillActivityListCache.isExist()) {
+            throw new SeckillException(HttpCode.ACTIVITY_NOT_EXISTS);
+        }
+        // 稍后重试，前端需要对这个状态做特殊处理，即不去刷新数据，静默稍后重试
+        if (seckillActivityListCache.isRetryLater()) {
+            throw new SeckillException(HttpCode.RETRY_LATER);
+        }
+        return seckillActivityListCache.getData().stream().map(seckillActivity -> {
+            SeckillActivityDTO seckillActivityDTO = new SeckillActivityDTO();
+            BeanUtil.copyProperties(seckillActivity, seckillActivityDTO);
+            seckillActivityDTO.setVersion(seckillActivityListCache.getVersion());
+            return seckillActivityDTO;
+        }).collect(Collectors.toList());
+    }
+
 }

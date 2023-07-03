@@ -51,10 +51,7 @@ public class RedisCacheService implements DistributedCacheService {
 
     @Override
     public void put(String key, Object value, long expireTime) {
-        if (!StringUtils.hasLength(key) || value == null) {
-            return;
-        }
-        redisTemplate.opsForValue().set(key, value, expireTime);
+        put(key, value, expireTime, TimeUnit.SECONDS);
     }
 
     @Override
@@ -68,6 +65,11 @@ public class RedisCacheService implements DistributedCacheService {
         } catch (Exception e) {
             return null;
         }
+    }
+
+    @Override
+    public Object getObject(String key) {
+        return redisTemplate.opsForValue().get(key);
     }
 
     @Override

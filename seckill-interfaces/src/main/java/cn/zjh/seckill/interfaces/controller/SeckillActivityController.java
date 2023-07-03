@@ -42,6 +42,15 @@ public class SeckillActivityController {
     }
 
     /**
+     * 获取秒杀活动列表
+     */
+    @RequestMapping(value = "/seckillActivityList", method = {RequestMethod.GET, RequestMethod.POST})
+    public ResponseMessage<List<SeckillActivityDTO>> getSeckillActivityList(@RequestParam(value = "status", required = false) Integer status,
+                                                                            @RequestParam(value = "version", required = false) Long version) {
+        return ResponseMessageBuilder.build(HttpCode.SUCCESS.getCode(), seckillActivityService.getSeckillActivityList(status, version));
+    }
+
+    /**
      * 根据时间和状态获取活动列表
      */
     @RequestMapping(value = "/getSeckillActivityListBetweenStartTimeAndEndTime", method = {RequestMethod.GET, RequestMethod.POST})
