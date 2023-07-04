@@ -1,6 +1,6 @@
 package cn.zjh.seckill.application.cache.service.activity.impl;
 
-import cn.zjh.seckill.application.builder.common.activity.SeckillActivityBuilder;
+import cn.zjh.seckill.application.builder.activity.SeckillActivityBuilder;
 import cn.zjh.seckill.application.cache.model.SeckillBusinessCache;
 import cn.zjh.seckill.application.cache.service.activity.SeckillActivityListCacheService;
 import cn.zjh.seckill.domain.constants.SeckillConstants;

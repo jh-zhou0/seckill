@@ -1,5 +1,8 @@
 package cn.zjh.seckill.application.service.impl;
 
+import cn.zjh.seckill.application.builder.goods.SeckillGoodsBuilder;
+import cn.zjh.seckill.application.cache.model.SeckillBusinessCache;
+import cn.zjh.seckill.application.cache.service.goods.SeckillGoodsListCacheService;
 import cn.zjh.seckill.application.service.SeckillGoodsService;
 import cn.zjh.seckill.domain.code.HttpCode;
 import cn.zjh.seckill.domain.dto.SeckillGoodsDTO;
@@ -15,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 商品
@@ -28,9 +32,11 @@ public class SeckillGoodsServiceImpl implements SeckillGoodsService {
     private SeckillGoodsRepository seckillGoodsRepository;
     @Resource
     private SeckillActivityRepository seckillActivityRepository;
+    @Resource
+    private SeckillGoodsListCacheService seckillGoodsListCacheService;
     
     @Override
-    public int saveSeckillGoods(SeckillGoodsDTO seckillGoodsDTO) {
+    public void saveSeckillGoods(SeckillGoodsDTO seckillGoodsDTO) {
         if (seckillGoodsDTO == null) {
             throw new SeckillException(HttpCode.PARAMS_INVALID);
         }
@@ -45,7 +51,7 @@ public class SeckillGoodsServiceImpl implements SeckillGoodsService {
         seckillGoods.setEndTime(seckillActivity.getEndTime());
         seckillGoods.setAvailableStock(seckillGoodsDTO.getInitialStock());
         seckillGoods.setStatus(SeckillGoodsStatus.PUBLISHED.getCode());
-        return seckillGoodsRepository.saveSeckillGoods(seckillGoods);
+        seckillGoodsRepository.saveSeckillGoods(seckillGoods);
     }
 
     @Override
@@ -72,5 +78,25 @@ public class SeckillGoodsServiceImpl implements SeckillGoodsService {
     public Integer getAvailableStockById(Long id) {
         return seckillGoodsRepository.getAvailableStockById(id);
     }
-    
+
+    @Override
+    public List<SeckillGoodsDTO> getSeckillGoodsList(Long activityId, Long version) {
+        if (activityId == null) {
+            throw new SeckillException(HttpCode.ACTIVITY_NOT_EXISTS);
+        }
+        SeckillBusinessCache<List<SeckillGoods>> seckillGoodsListCache = seckillGoodsListCacheService.getCachedGoodsList(activityId, version);
+        if (!seckillGoodsListCache.isExist()) {
+            throw new SeckillException(HttpCode.ACTIVITY_NOT_EXISTS);
+        }
+        // 稍后重试，前端需要对这个状态做特殊处理，即不去刷新数据，静默稍后重试
+        if (seckillGoodsListCache.isRetryLater()) {
+            throw new SeckillException(HttpCode.RETRY_LATER);
+        }
+        return seckillGoodsListCache.getData().stream().map(seckillGoods -> {
+            SeckillGoodsDTO seckillGoodsDTO = SeckillGoodsBuilder.toSeckillGoodsDTO(seckillGoods);
+            seckillGoodsDTO.setVersion(seckillGoodsListCache.getVersion());
+            return seckillGoodsDTO;
+        }).collect(Collectors.toList());
+    }
+
 }

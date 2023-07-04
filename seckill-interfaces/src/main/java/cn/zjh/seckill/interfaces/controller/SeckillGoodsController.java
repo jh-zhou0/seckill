@@ -51,6 +51,14 @@ public class SeckillGoodsController {
     }
 
     /**
+     * 根据活动id和版本获取商品列表
+     */
+    @RequestMapping(value = "/getSeckillGoodsList", method = {RequestMethod.GET, RequestMethod.POST})
+    public ResponseMessage<List<SeckillGoodsDTO>> getSeckillGoodsList(Long activityId, Long version) {
+        return ResponseMessageBuilder.build(HttpCode.SUCCESS.getCode(), seckillGoodsService.getSeckillGoodsList(activityId, version));
+    }
+
+    /**
      * 更新商品状态
      */
     @RequestMapping(value = "/updateStatus", method = {RequestMethod.GET, RequestMethod.POST})

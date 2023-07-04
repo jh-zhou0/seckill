@@ -22,11 +22,11 @@ public class SeckillOrderRepositoryImpl implements SeckillOrderRepository {
     private SeckillOrderMapper seckillOrderMapper;
     
     @Override
-    public int saveSeckillOrder(SeckillOrder seckillOrder) {
+    public void saveSeckillOrder(SeckillOrder seckillOrder) {
         if (seckillOrder == null) {
             throw new SeckillException(HttpCode.PARAMS_INVALID);
         }
-        return seckillOrderMapper.saveSeckillOrder(seckillOrder);
+        seckillOrderMapper.saveSeckillOrder(seckillOrder);
     }
 
     @Override

@@ -14,7 +14,7 @@ public interface SeckillOrderRepository {
     /**
      * 保存订单
      */
-    int saveSeckillOrder(SeckillOrder seckillOrder);
+    void saveSeckillOrder(SeckillOrder seckillOrder);
 
     /**
      * 根据用户id获取订单列表

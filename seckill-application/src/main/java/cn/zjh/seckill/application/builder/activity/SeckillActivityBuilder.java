@@ -1,4 +1,4 @@
-package cn.zjh.seckill.application.builder.common.activity;
+package cn.zjh.seckill.application.builder.activity;
 
 import cn.zjh.seckill.application.builder.common.SeckillCommonBuilder;
 import cn.zjh.seckill.application.command.SeckillActivityCommand;

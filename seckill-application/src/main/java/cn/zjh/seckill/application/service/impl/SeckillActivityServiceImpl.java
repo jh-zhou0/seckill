@@ -1,6 +1,6 @@
 package cn.zjh.seckill.application.service.impl;
 
-import cn.zjh.seckill.application.builder.common.activity.SeckillActivityBuilder;
+import cn.zjh.seckill.application.builder.activity.SeckillActivityBuilder;
 import cn.zjh.seckill.application.cache.model.SeckillBusinessCache;
 import cn.zjh.seckill.application.cache.service.activity.SeckillActivityCacheService;
 import cn.zjh.seckill.application.cache.service.activity.SeckillActivityListCacheService;
@@ -79,8 +79,7 @@ public class SeckillActivityServiceImpl implements SeckillActivityService {
             throw new SeckillException(HttpCode.RETRY_LATER);
         }
         return seckillActivityListCache.getData().stream().map(seckillActivity -> {
-            SeckillActivityDTO seckillActivityDTO = new SeckillActivityDTO();
-            BeanUtil.copyProperties(seckillActivity, seckillActivityDTO);
+            SeckillActivityDTO seckillActivityDTO = SeckillActivityBuilder.toSeckillActivityDTO(seckillActivity);
             seckillActivityDTO.setVersion(seckillActivityListCache.getVersion());
             return seckillActivityDTO;
         }).collect(Collectors.toList());

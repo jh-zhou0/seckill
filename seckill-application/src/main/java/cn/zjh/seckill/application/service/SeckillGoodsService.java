@@ -15,7 +15,7 @@ public interface SeckillGoodsService {
     /**
      * 保存商品信息
      */
-    int saveSeckillGoods(SeckillGoodsDTO seckillGoodsDTO);
+    void saveSeckillGoods(SeckillGoodsDTO seckillGoodsDTO);
 
     /**
      * 根据id获取商品详细信息
@@ -41,5 +41,10 @@ public interface SeckillGoodsService {
      * 获取当前可用库存
      */
     Integer getAvailableStockById(Long id);
+
+    /**
+     * 根据活动id和版本获取商品列表
+     */
+    List<SeckillGoodsDTO> getSeckillGoodsList(Long activityId, Long version);
 
 }
