@@ -1,30 +1,29 @@
-package cn.zjh.seckill.application.service;
+package cn.zjh.seckill.domain.service;
 
-import cn.zjh.seckill.domain.dto.SeckillActivityDTO;
 import cn.zjh.seckill.domain.model.SeckillActivity;
 
 import java.util.Date;
 import java.util.List;
 
 /**
- * 活动
+ * 活动领域层的服务接口
  * 
  * @author zjh - kayson
  */
-public interface SeckillActivityService {
+public interface SeckillActivityDomainService {
 
     /**
      * 保存活动信息
      */
-    void saveSeckillActivityDTO(SeckillActivityDTO seckillActivityDTO);
+    void saveSeckillActivity(SeckillActivity seckillActivity);
 
     /**
-     * 根据状态获取活动列表
+     * 活动列表
      */
     List<SeckillActivity> getSeckillActivityList(Integer status);
 
     /**
-     * 根据时间和状态获取活动列表
+     * 获取正在进行中的活动列表
      */
     List<SeckillActivity> getSeckillActivityListBetweenStartTimeAndEndTime(Date currentTime, Integer status);
 
@@ -37,15 +36,5 @@ public interface SeckillActivityService {
      * 修改状态
      */
     void updateStatus(Integer status, Long id);
-
-    /**
-     * 活动列表
-     */
-    List<SeckillActivityDTO> getSeckillActivityList(Integer status, Long version);
-
-    /**
-     * 获取活动信息，带有缓存
-     */
-    SeckillActivityDTO getSeckillActivity(Long id, Long version);
 
 }

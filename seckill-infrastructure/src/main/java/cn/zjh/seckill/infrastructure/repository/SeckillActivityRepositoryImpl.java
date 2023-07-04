@@ -46,8 +46,8 @@ public class SeckillActivityRepositoryImpl implements SeckillActivityRepository 
     }
 
     @Override
-    public int updateStatus(Integer status, Long id) {
-        return seckillActivityMapper.updateStatus(status, id);
+    public void updateStatus(Integer status, Long id) {
+        seckillActivityMapper.updateStatus(status, id);
     }
     
 }

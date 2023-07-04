@@ -35,6 +35,6 @@ public interface SeckillActivityRepository {
     /**
      * 修改状态
      */
-    int updateStatus(Integer status, Long id);
+    void updateStatus(Integer status, Long id);
 
 }

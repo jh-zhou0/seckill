@@ -10,7 +10,7 @@ import cn.zjh.seckill.domain.dto.SeckillActivityDTO;
 import cn.zjh.seckill.domain.enums.SeckillActivityStatus;
 import cn.zjh.seckill.domain.exception.SeckillException;
 import cn.zjh.seckill.domain.model.SeckillActivity;
-import cn.zjh.seckill.domain.repository.SeckillActivityRepository;
+import cn.zjh.seckill.domain.service.SeckillActivityDomainService;
 import cn.zjh.seckill.infrastructure.utils.beans.BeanUtil;
 import cn.zjh.seckill.infrastructure.utils.id.SnowFlakeFactory;
 import org.springframework.stereotype.Service;
@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 public class SeckillActivityServiceImpl implements SeckillActivityService {
     
     @Resource
-    private SeckillActivityRepository seckillActivityRepository;
+    private SeckillActivityDomainService seckillActivityDomainService;
     @Resource
     private SeckillActivityListCacheService seckillActivityListCacheService;
     @Resource
@@ -44,27 +44,27 @@ public class SeckillActivityServiceImpl implements SeckillActivityService {
         BeanUtil.copyProperties(seckillActivityDTO, seckillActivity);
         seckillActivity.setId(SnowFlakeFactory.getSnowFlakeFromCache().nextId());
         seckillActivity.setStatus(SeckillActivityStatus.PUBLISHED.getCode());
-        seckillActivityRepository.saveSeckillActivity(seckillActivity);
+        seckillActivityDomainService.saveSeckillActivity(seckillActivity);
     }
 
     @Override
     public List<SeckillActivity> getSeckillActivityList(Integer status) {
-        return seckillActivityRepository.getSeckillActivityList(status);
+        return seckillActivityDomainService.getSeckillActivityList(status);
     }
 
     @Override
     public List<SeckillActivity> getSeckillActivityListBetweenStartTimeAndEndTime(Date currentTime, Integer status) {
-        return seckillActivityRepository.getSeckillActivityListBetweenStartTimeAndEndTime(currentTime, status);
+        return seckillActivityDomainService.getSeckillActivityListBetweenStartTimeAndEndTime(currentTime, status);
     }
 
     @Override
     public SeckillActivity getSeckillActivityById(Long id) {
-        return seckillActivityRepository.getSeckillActivityById(id);
+        return seckillActivityDomainService.getSeckillActivityById(id);
     }
 
     @Override
-    public int updateStatus(Integer status, Long id) {
-        return seckillActivityRepository.updateStatus(status, id);
+    public void updateStatus(Integer status, Long id) {
+        seckillActivityDomainService.updateStatus(status, id);
     }
 
     @Override
