@@ -2,6 +2,7 @@ package cn.zjh.seckill.application.service.impl;
 
 import cn.zjh.seckill.application.builder.goods.SeckillGoodsBuilder;
 import cn.zjh.seckill.application.cache.model.SeckillBusinessCache;
+import cn.zjh.seckill.application.cache.service.goods.SeckillGoodsCacheService;
 import cn.zjh.seckill.application.cache.service.goods.SeckillGoodsListCacheService;
 import cn.zjh.seckill.application.service.SeckillGoodsService;
 import cn.zjh.seckill.domain.code.HttpCode;
@@ -34,6 +35,8 @@ public class SeckillGoodsServiceImpl implements SeckillGoodsService {
     private SeckillActivityRepository seckillActivityRepository;
     @Resource
     private SeckillGoodsListCacheService seckillGoodsListCacheService;
+    @Resource
+    private SeckillGoodsCacheService seckillGoodsCacheService;
     
     @Override
     public void saveSeckillGoods(SeckillGoodsDTO seckillGoodsDTO) {
@@ -97,6 +100,24 @@ public class SeckillGoodsServiceImpl implements SeckillGoodsService {
             seckillGoodsDTO.setVersion(seckillGoodsListCache.getVersion());
             return seckillGoodsDTO;
         }).collect(Collectors.toList());
+    }
+
+    @Override
+    public SeckillGoodsDTO getSeckillGoods(Long id, Long version) {
+        if (id == null) {
+            throw new SeckillException(HttpCode.PARAMS_INVALID);
+        }
+        SeckillBusinessCache<SeckillGoods> seckillGoodsCache = seckillGoodsCacheService.getCachedGoods(id, version);
+        if (!seckillGoodsCache.isExist()) {
+            throw new SeckillException(HttpCode.GOODS_NOT_EXISTS);
+        }
+        // 稍后重试，前端需要对这个状态做特殊处理，即不去刷新数据，静默稍后重试
+        if (seckillGoodsCache.isRetryLater()) {
+            throw new SeckillException(HttpCode.RETRY_LATER);
+        }
+        SeckillGoodsDTO seckillGoodsDTO = SeckillGoodsBuilder.toSeckillGoodsDTO(seckillGoodsCache.getData());
+        seckillGoodsDTO.setVersion(seckillGoodsCache.getVersion());
+        return seckillGoodsDTO;
     }
 
 }
