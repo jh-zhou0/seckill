@@ -9,7 +9,7 @@ import cn.zjh.seckill.domain.enums.SeckillOrderStatus;
 import cn.zjh.seckill.domain.exception.SeckillException;
 import cn.zjh.seckill.domain.model.SeckillGoods;
 import cn.zjh.seckill.domain.model.SeckillOrder;
-import cn.zjh.seckill.domain.repository.SeckillOrderRepository;
+import cn.zjh.seckill.domain.service.SeckillOrderDomainService;
 import cn.zjh.seckill.infrastructure.utils.beans.BeanUtil;
 import cn.zjh.seckill.infrastructure.utils.id.SnowFlakeFactory;
 import org.springframework.stereotype.Service;
@@ -30,7 +30,7 @@ import java.util.Objects;
 public class SeckillOrderServiceImpl implements SeckillOrderService {
     
     @Resource
-    private SeckillOrderRepository seckillOrderRepository;
+    private SeckillOrderDomainService seckillOrderDomainService;
     @Resource
     private SeckillGoodsService seckillGoodsService;
     
@@ -76,7 +76,7 @@ public class SeckillOrderServiceImpl implements SeckillOrderService {
         seckillOrder.setCreateTime(new Date());
         
         // 保存订单
-        seckillOrderRepository.saveSeckillOrder(seckillOrder);
+        seckillOrderDomainService.saveSeckillOrder(seckillOrder);
         // 扣减库存
         seckillGoodsService.updateAvailableStock(seckillOrderDTO.getQuantity(), seckillOrderDTO.getGoodsId());
         return seckillOrder;
@@ -84,12 +84,12 @@ public class SeckillOrderServiceImpl implements SeckillOrderService {
 
     @Override
     public List<SeckillOrder> getSeckillOrderByUserId(Long userId) {
-        return seckillOrderRepository.getSeckillOrderByUserId(userId);
+        return seckillOrderDomainService.getSeckillOrderByUserId(userId);
     }
 
     @Override
     public List<SeckillOrder> getSeckillOrderByActivityId(Long activityId) {
-        return seckillOrderRepository.getSeckillOrderByActivityId(activityId);
+        return seckillOrderDomainService.getSeckillOrderByActivityId(activityId);
     }
     
 }
