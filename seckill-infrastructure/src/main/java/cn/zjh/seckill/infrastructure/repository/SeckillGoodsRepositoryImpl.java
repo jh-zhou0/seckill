@@ -40,13 +40,13 @@ public class SeckillGoodsRepositoryImpl implements SeckillGoodsRepository {
     }
 
     @Override
-    public int updateStatus(Integer status, Long id) {
-        return seckillGoodsMapper.updateStatus(status, id);
+    public void updateStatus(Integer status, Long id) {
+        seckillGoodsMapper.updateStatus(status, id);
     }
 
     @Override
-    public int updateAvailableStock(Integer count, Long id) {
-        return seckillGoodsMapper.updateAvailableStock(count, id);
+    public void updateAvailableStock(Integer count, Long id) {
+        seckillGoodsMapper.updateAvailableStock(count, id);
     }
 
     @Override

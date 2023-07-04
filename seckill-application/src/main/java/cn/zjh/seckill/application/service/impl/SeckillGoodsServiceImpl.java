@@ -12,7 +12,7 @@ import cn.zjh.seckill.domain.exception.SeckillException;
 import cn.zjh.seckill.domain.model.SeckillActivity;
 import cn.zjh.seckill.domain.model.SeckillGoods;
 import cn.zjh.seckill.domain.repository.SeckillActivityRepository;
-import cn.zjh.seckill.domain.repository.SeckillGoodsRepository;
+import cn.zjh.seckill.domain.service.SeckillGoodsDomainService;
 import cn.zjh.seckill.infrastructure.utils.beans.BeanUtil;
 import cn.zjh.seckill.infrastructure.utils.id.SnowFlakeFactory;
 import org.springframework.stereotype.Service;
@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 public class SeckillGoodsServiceImpl implements SeckillGoodsService {
     
     @Resource
-    private SeckillGoodsRepository seckillGoodsRepository;
+    private SeckillGoodsDomainService seckillGoodsDomainService;
     @Resource
     private SeckillActivityRepository seckillActivityRepository;
     @Resource
@@ -54,32 +54,32 @@ public class SeckillGoodsServiceImpl implements SeckillGoodsService {
         seckillGoods.setEndTime(seckillActivity.getEndTime());
         seckillGoods.setAvailableStock(seckillGoodsDTO.getInitialStock());
         seckillGoods.setStatus(SeckillGoodsStatus.PUBLISHED.getCode());
-        seckillGoodsRepository.saveSeckillGoods(seckillGoods);
+        seckillGoodsDomainService.saveSeckillGoods(seckillGoods);
     }
 
     @Override
     public SeckillGoods getSeckillGoodsById(Long id) {
-        return seckillGoodsRepository.getSeckillGoodsById(id);
+        return seckillGoodsDomainService.getSeckillGoodsById(id);
     }
 
     @Override
     public List<SeckillGoods> getSeckillGoodsByActivityId(Long activityId) {
-        return seckillGoodsRepository.getSeckillGoodsByActivityId(activityId);
+        return seckillGoodsDomainService.getSeckillGoodsByActivityId(activityId);
     }
 
     @Override
-    public int updateStatus(Integer status, Long id) {
-        return seckillGoodsRepository.updateStatus(status, id);
+    public void updateStatus(Integer status, Long id) {
+        seckillGoodsDomainService.updateStatus(status, id);
     }
 
     @Override
-    public int updateAvailableStock(Integer count, Long id) {
-        return seckillGoodsRepository.updateAvailableStock(count, id);
+    public void updateAvailableStock(Integer count, Long id) {
+        seckillGoodsDomainService.updateAvailableStock(count, id);
     }
 
     @Override
     public Integer getAvailableStockById(Long id) {
-        return seckillGoodsRepository.getAvailableStockById(id);
+        return seckillGoodsDomainService.getAvailableStockById(id);
     }
 
     @Override

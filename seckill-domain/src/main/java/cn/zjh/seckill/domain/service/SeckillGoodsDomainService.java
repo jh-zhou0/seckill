@@ -1,21 +1,20 @@
-package cn.zjh.seckill.application.service;
+package cn.zjh.seckill.domain.service;
 
-import cn.zjh.seckill.domain.dto.SeckillGoodsDTO;
 import cn.zjh.seckill.domain.model.SeckillGoods;
 
 import java.util.List;
 
 /**
- * 商品
+ * 商品领域层的服务接口
  * 
  * @author zjh - kayson
  */
-public interface SeckillGoodsService {
+public interface SeckillGoodsDomainService {
 
     /**
      * 保存商品信息
      */
-    void saveSeckillGoods(SeckillGoodsDTO seckillGoodsDTO);
+    void saveSeckillGoods(SeckillGoods seckillGoods);
 
     /**
      * 根据id获取商品详细信息
@@ -37,19 +36,10 @@ public interface SeckillGoodsService {
      */
     void updateAvailableStock(Integer count, Long id);
 
+
     /**
      * 获取当前可用库存
      */
     Integer getAvailableStockById(Long id);
-
-    /**
-     * 根据活动id和版本获取商品列表
-     */
-    List<SeckillGoodsDTO> getSeckillGoodsList(Long activityId, Long version);
-
-    /**
-     * 根据id获取商品详细信息（带缓存）
-     */
-    SeckillGoodsDTO getSeckillGoods(Long id, Long version);
-
+    
 }

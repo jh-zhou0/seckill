@@ -29,12 +29,12 @@ public interface SeckillGoodsRepository {
     /**
      * 修改商品状态
      */
-    int updateStatus(Integer status, Long id);
+    void updateStatus(Integer status, Long id);
 
     /**
      * 扣减库存
      */
-    int updateAvailableStock(Integer count, Long id);
+    void updateAvailableStock(Integer count, Long id);
 
 
     /**
