@@ -1,6 +1,6 @@
 package cn.zjh.seckill.application.service;
 
-import cn.zjh.seckill.domain.dto.SeckillOrderDTO;
+import cn.zjh.seckill.application.command.SeckillOrderCommand;
 import cn.zjh.seckill.domain.model.SeckillOrder;
 
 import java.util.List;
@@ -15,7 +15,7 @@ public interface SeckillOrderService {
     /**
      * 保存订单
      */
-    SeckillOrder saveSeckillOrder(SeckillOrderDTO seckillOrderDTO);
+    Long saveSeckillOrder(Long userId, SeckillOrderCommand seckillOrderCommand);
 
     /**
      * 根据用户id获取订单列表

@@ -76,7 +76,7 @@ public class SeckillGoodsDomainServiceImpl implements SeckillGoodsDomainService 
     }
 
     @Override
-    public void updateAvailableStock(Integer count, Long id) {
+    public boolean updateAvailableStock(Integer count, Long id) {
         logger.info("SeckillGoodsPublish|更新秒杀商品库存|{}", id);
         if (count == null || count <= 0 || id == null) {
             throw new SeckillException(HttpCode.PARAMS_INVALID);
@@ -86,12 +86,25 @@ public class SeckillGoodsDomainServiceImpl implements SeckillGoodsDomainService 
             throw new SeckillException(HttpCode.GOODS_NOT_EXISTS);
         }
         // 更新库存
-        seckillGoodsRepository.updateAvailableStock(count, id);
-        logger.info("SeckillGoodsPublish|秒杀商品库存已更新|{}", id);
+        boolean isUpdate = seckillGoodsRepository.updateAvailableStock(count, id) > 0;
+        if (isUpdate) {
+            logger.info("SeckillGoodsPublish|秒杀商品库存已更新|{}", id);
+            SeckillGoodsEvent seckillGoodsEvent = new SeckillGoodsEvent(id, seckillGoods.getActivityId(), seckillGoods.getStatus());
+            eventPublisher.publish(seckillGoodsEvent);
+            logger.info("SeckillGoodsPublish|秒杀商品库存事件已发布|{}", id);
+        } else {
+            logger.info("SeckillGoodsPublish|秒杀商品库存未更新|{}", id);
+        }
+        return isUpdate;
+    }
 
-        SeckillGoodsEvent seckillGoodsEvent = new SeckillGoodsEvent(id, seckillGoods.getActivityId(), seckillGoods.getStatus());
-        eventPublisher.publish(seckillGoodsEvent);
-        logger.info("SeckillGoodsPublish|秒杀商品库存事件已发布|{}", id);
+    @Override
+    public boolean updateDBAvailableStock(Integer count, Long id) {
+        logger.info("SeckillGoodsPublish|更新秒杀商品库存|{}", id);
+        if (count == null || count <= 0 || id == null){
+            throw new SeckillException(HttpCode.PARAMS_INVALID);
+        }
+        return seckillGoodsRepository.updateAvailableStock(count, id) > 0;
     }
 
     @Override

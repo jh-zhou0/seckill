@@ -38,12 +38,17 @@ public interface SeckillGoodsService {
     void updateAvailableStock(Integer count, Long id);
 
     /**
+     * 扣减数据库库存
+     */
+    boolean updateDBAvailableStock(Integer count, Long id);
+
+    /**
      * 获取当前可用库存
      */
     Integer getAvailableStockById(Long id);
 
     /**
-     * 根据活动id和版本获取商品列表
+     * 根据活动id和版本获取商品列表（带缓存）
      */
     List<SeckillGoodsDTO> getSeckillGoodsList(Long activityId, Long version);
 

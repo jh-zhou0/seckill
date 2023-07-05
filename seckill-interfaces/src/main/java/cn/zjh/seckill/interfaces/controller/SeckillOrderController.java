@@ -1,12 +1,12 @@
 package cn.zjh.seckill.interfaces.controller;
 
-import cn.zjh.seckill.application.service.SeckillGoodsService;
+import cn.zjh.seckill.application.command.SeckillOrderCommand;
 import cn.zjh.seckill.application.service.SeckillOrderService;
 import cn.zjh.seckill.domain.code.HttpCode;
-import cn.zjh.seckill.domain.dto.SeckillOrderDTO;
 import cn.zjh.seckill.domain.model.SeckillOrder;
 import cn.zjh.seckill.domain.response.ResponseMessage;
 import cn.zjh.seckill.domain.response.ResponseMessageBuilder;
+import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,9 +30,9 @@ public class SeckillOrderController {
      * 保存秒杀订单
      */
     @RequestMapping(value = "/saveSeckillOrder", method = {RequestMethod.GET, RequestMethod.POST})
-    public ResponseMessage<SeckillOrder> saveSeckillOrder(SeckillOrderDTO seckillOrderDTO) {
-        SeckillOrder seckillOrder = seckillOrderService.saveSeckillOrder(seckillOrderDTO);
-        return ResponseMessageBuilder.build(HttpCode.SUCCESS.getCode(), seckillOrder);
+    public ResponseMessage<Long> saveSeckillOrder(@RequestAttribute Long userId, SeckillOrderCommand seckillOrderCommand) {
+        Long orderId = seckillOrderService.saveSeckillOrder(userId, seckillOrderCommand);
+        return ResponseMessageBuilder.build(HttpCode.SUCCESS.getCode(), orderId);
     }
 
     /**

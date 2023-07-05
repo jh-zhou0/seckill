@@ -34,7 +34,7 @@ public interface SeckillGoodsRepository {
     /**
      * 扣减库存
      */
-    void updateAvailableStock(Integer count, Long id);
+    int updateAvailableStock(Integer count, Long id);
 
 
     /**
