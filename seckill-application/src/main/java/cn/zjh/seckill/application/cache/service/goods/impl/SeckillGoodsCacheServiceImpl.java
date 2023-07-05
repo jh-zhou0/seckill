@@ -47,7 +47,7 @@ public class SeckillGoodsCacheServiceImpl implements SeckillGoodsCacheService {
     
     @Override
     public String buildCacheKey(Object key) {
-        return StringUtil.append(SECKILL_GOODS_UPDATE_CACHE_LOCK_KEY, key);
+        return StringUtil.append(SeckillConstants.SECKILL_GOODS_CACHE_KEY, key);
     }
 
     @Override

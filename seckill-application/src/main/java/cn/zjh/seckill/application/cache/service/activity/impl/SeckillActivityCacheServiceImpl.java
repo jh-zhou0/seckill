@@ -128,7 +128,7 @@ public class SeckillActivityCacheServiceImpl implements SeckillActivityCacheServ
 
     @Override
     public String buildCacheKey(Object key) {
-        return StringUtil.append(SECKILL_ACTIVITY_UPDATE_CACHE_LOCK_KEY, key);
+        return StringUtil.append(SeckillConstants.SECKILL_ACTIVITY_CACHE_KEY, key);
     }
     
 }

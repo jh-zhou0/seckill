@@ -30,4 +30,17 @@ public interface DistributedCacheService {
 
     Boolean hasKey(String key);
 
+    /**
+     * 扣减内存中的数据
+     */
+    default Long decrement(String key, long delta){
+        return null;
+    }
+    /**
+     * 增加内存中的数据
+     */
+    default Long increment(String key, long delta){
+        return null;
+    }
+
 }

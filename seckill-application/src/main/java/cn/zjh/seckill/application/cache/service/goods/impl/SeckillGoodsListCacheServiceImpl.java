@@ -5,7 +5,6 @@ import cn.zjh.seckill.application.cache.model.SeckillBusinessCache;
 import cn.zjh.seckill.application.cache.service.goods.SeckillGoodsListCacheService;
 import cn.zjh.seckill.application.service.SeckillGoodsService;
 import cn.zjh.seckill.domain.constants.SeckillConstants;
-import cn.zjh.seckill.domain.model.SeckillActivity;
 import cn.zjh.seckill.domain.model.SeckillGoods;
 import cn.zjh.seckill.infrastructure.cache.distribute.DistributedCacheService;
 import cn.zjh.seckill.infrastructure.cache.local.LocalCacheService;
@@ -129,7 +128,7 @@ public class SeckillGoodsListCacheServiceImpl implements SeckillGoodsListCacheSe
 
     @Override
     public String buildCacheKey(Object key) {
-        return StringUtil.append(SECKILL_GOODS_LIST_UPDATE_CACHE_LOCK_KEY, key);
+        return StringUtil.append(SeckillConstants.SECKILL_GOODSES_CACHE_KEY, key);
     }
     
 }

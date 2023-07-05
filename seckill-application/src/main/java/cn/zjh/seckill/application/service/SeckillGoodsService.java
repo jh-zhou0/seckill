@@ -1,5 +1,6 @@
 package cn.zjh.seckill.application.service;
 
+import cn.zjh.seckill.application.command.SeckillGoodsCommand;
 import cn.zjh.seckill.domain.dto.SeckillGoodsDTO;
 import cn.zjh.seckill.domain.model.SeckillGoods;
 
@@ -15,7 +16,7 @@ public interface SeckillGoodsService {
     /**
      * 保存商品信息
      */
-    void saveSeckillGoods(SeckillGoodsDTO seckillGoodsDTO);
+    void saveSeckillGoods(SeckillGoodsCommand seckillGoodsCommand);
 
     /**
      * 根据id获取商品详细信息
