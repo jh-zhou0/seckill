@@ -3,6 +3,8 @@ package cn.zjh.seckill.domain.dto;
 import java.io.Serializable;
 
 /**
+ * 用户
+ * 
  * @author zjh - kayson
  */
 public class SeckillUserDTO implements Serializable {

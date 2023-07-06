@@ -3,7 +3,7 @@ package cn.zjh.seckill.application.order.place.impl;
 import cn.zjh.seckill.application.command.SeckillOrderCommand;
 import cn.zjh.seckill.application.order.place.SeckillPlaceOrderService;
 import cn.zjh.seckill.application.service.SeckillGoodsService;
-import cn.zjh.seckill.domain.code.HttpCode;
+import cn.zjh.seckill.domain.code.ErrorCode;
 import cn.zjh.seckill.domain.dto.SeckillGoodsDTO;
 import cn.zjh.seckill.domain.exception.SeckillException;
 import cn.zjh.seckill.domain.model.SeckillOrder;
@@ -35,7 +35,7 @@ public class SeckillPlaceOrderDBService implements SeckillPlaceOrderService {
         checkSeckillGoods(seckillOrderCommand, seckillGoods);
         // 扣减库存不成功，则库存不足
         if (!seckillGoodsService.updateDBAvailableStock(seckillOrderCommand.getQuantity(), seckillOrderCommand.getGoodsId())) {
-            throw new SeckillException(HttpCode.STOCK_LT_ZERO);
+            throw new SeckillException(ErrorCode.STOCK_LT_ZERO);
         }
         // 构建订单
         SeckillOrder seckillOrder = buildSeckillOrder(userId, seckillOrderCommand, seckillGoods);

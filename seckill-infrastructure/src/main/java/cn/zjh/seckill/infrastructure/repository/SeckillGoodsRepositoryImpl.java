@@ -1,6 +1,6 @@
 package cn.zjh.seckill.infrastructure.repository;
 
-import cn.zjh.seckill.domain.code.HttpCode;
+import cn.zjh.seckill.domain.code.ErrorCode;
 import cn.zjh.seckill.domain.exception.SeckillException;
 import cn.zjh.seckill.domain.model.SeckillGoods;
 import cn.zjh.seckill.domain.repository.SeckillGoodsRepository;
@@ -24,7 +24,7 @@ public class SeckillGoodsRepositoryImpl implements SeckillGoodsRepository {
     @Override
     public void saveSeckillGoods(SeckillGoods seckillGoods) {
         if (seckillGoods == null) {
-            throw new SeckillException(HttpCode.PARAMS_INVALID);
+            throw new SeckillException(ErrorCode.PARAMS_INVALID);
         }
         seckillGoodsMapper.saveSeckillGoods(seckillGoods);
     }

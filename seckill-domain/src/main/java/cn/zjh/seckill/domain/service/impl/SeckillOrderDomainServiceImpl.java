@@ -1,6 +1,6 @@
 package cn.zjh.seckill.domain.service.impl;
 
-import cn.zjh.seckill.domain.code.HttpCode;
+import cn.zjh.seckill.domain.code.ErrorCode;
 import cn.zjh.seckill.domain.enums.SeckillOrderStatus;
 import cn.zjh.seckill.domain.event.SeckillOrderEvent;
 import cn.zjh.seckill.domain.event.publisher.EventPublisher;
@@ -35,7 +35,7 @@ public class SeckillOrderDomainServiceImpl implements SeckillOrderDomainService 
     public void saveSeckillOrder(SeckillOrder seckillOrder) {
         logger.info("saveSeckillOrder|下单|{}", JSON.toJSONString(seckillOrder));
         if (seckillOrder == null) {
-            throw new SeckillException(HttpCode.PARAMS_INVALID);
+            throw new SeckillException(ErrorCode.PARAMS_INVALID);
         }
         seckillOrder.setStatus(SeckillOrderStatus.CREATED.getCode());
         boolean isSuccess = seckillOrderRepository.saveSeckillOrder(seckillOrder);
@@ -49,7 +49,7 @@ public class SeckillOrderDomainServiceImpl implements SeckillOrderDomainService 
     @Override
     public List<SeckillOrder> getSeckillOrderByUserId(Long userId) {
         if (userId == null) {
-            throw new SeckillException(HttpCode.PARAMS_INVALID);
+            throw new SeckillException(ErrorCode.PARAMS_INVALID);
         }
         return seckillOrderRepository.getSeckillOrderByUserId(userId);
     }
@@ -57,7 +57,7 @@ public class SeckillOrderDomainServiceImpl implements SeckillOrderDomainService 
     @Override
     public List<SeckillOrder> getSeckillOrderByActivityId(Long activityId) {
         if (activityId == null) {
-            throw new SeckillException(HttpCode.PARAMS_INVALID);
+            throw new SeckillException(ErrorCode.PARAMS_INVALID);
         }
         return seckillOrderRepository.getSeckillOrderByActivityId(activityId);
     }

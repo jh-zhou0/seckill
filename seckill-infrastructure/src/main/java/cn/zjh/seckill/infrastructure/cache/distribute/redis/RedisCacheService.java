@@ -1,8 +1,5 @@
 package cn.zjh.seckill.infrastructure.cache.distribute.redis;
 
-import cn.zjh.seckill.domain.code.HttpCode;
-import cn.zjh.seckill.domain.constants.SeckillConstants;
-import cn.zjh.seckill.domain.exception.SeckillException;
 import cn.zjh.seckill.infrastructure.cache.distribute.DistributedCacheService;
 import cn.zjh.seckill.infrastructure.utils.serializer.ProtoStuffSerializerUtils;
 import com.alibaba.fastjson.JSON;
@@ -154,23 +151,6 @@ public class RedisCacheService implements DistributedCacheService {
     @Override
     public Long initByLua(String key, Integer quantity) {
         return redisTemplate.execute(INIT_STOCK_SCRIPT, Collections.singletonList(key), quantity);
-    }
-
-    @Override
-    public void checkResult(Long result) {
-        if (result == SeckillConstants.LUA_RESULT_GOODS_STOCK_NOT_EXISTS) {
-            throw new SeckillException(HttpCode.STOCK_IS_NULL);
-        }
-        if (result == SeckillConstants.LUA_RESULT_GOODS_STOCK_PARAMS_LT_ZERO){
-            throw new SeckillException(HttpCode.PARAMS_INVALID);
-        }
-        if (result == SeckillConstants.LUA_RESULT_GOODS_STOCK_LT_ZERO){
-            throw new SeckillException(HttpCode.STOCK_LT_ZERO);
-        }
-    }
-
-    public RedisTemplate<String, Object> getRedisTemplate() {
-        return redisTemplate;
     }
 
 }

@@ -4,16 +4,17 @@ import cn.zjh.seckill.application.builder.activity.SeckillActivityBuilder;
 import cn.zjh.seckill.application.cache.model.SeckillBusinessCache;
 import cn.zjh.seckill.application.cache.service.activity.SeckillActivityCacheService;
 import cn.zjh.seckill.application.cache.service.activity.SeckillActivityListCacheService;
+import cn.zjh.seckill.application.command.SeckillActivityCommand;
 import cn.zjh.seckill.application.service.SeckillActivityService;
-import cn.zjh.seckill.domain.code.HttpCode;
+import cn.zjh.seckill.domain.code.ErrorCode;
 import cn.zjh.seckill.domain.dto.SeckillActivityDTO;
 import cn.zjh.seckill.domain.enums.SeckillActivityStatus;
 import cn.zjh.seckill.domain.exception.SeckillException;
 import cn.zjh.seckill.domain.model.SeckillActivity;
 import cn.zjh.seckill.domain.service.SeckillActivityDomainService;
-import cn.zjh.seckill.infrastructure.utils.beans.BeanUtil;
 import cn.zjh.seckill.infrastructure.utils.id.SnowFlakeFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.Date;
@@ -36,12 +37,12 @@ public class SeckillActivityServiceImpl implements SeckillActivityService {
     private SeckillActivityCacheService seckillActivityCacheService;
     
     @Override
-    public void saveSeckillActivityDTO(SeckillActivityDTO seckillActivityDTO) {
-        if (seckillActivityDTO == null) {
-            throw new SeckillException(HttpCode.PARAMS_INVALID);
+    @Transactional(rollbackFor = Exception.class)
+    public void saveSeckillActivity(SeckillActivityCommand seckillActivityCommand) {
+        if (seckillActivityCommand == null) {
+            throw new SeckillException(ErrorCode.PARAMS_INVALID);
         }
-        SeckillActivity seckillActivity = new SeckillActivity();
-        BeanUtil.copyProperties(seckillActivityDTO, seckillActivity);
+        SeckillActivity seckillActivity = SeckillActivityBuilder.toSeckillActivity(seckillActivityCommand);
         seckillActivity.setId(SnowFlakeFactory.getSnowFlakeFromCache().nextId());
         seckillActivity.setStatus(SeckillActivityStatus.PUBLISHED.getCode());
         seckillActivityDomainService.saveSeckillActivity(seckillActivity);
@@ -72,11 +73,11 @@ public class SeckillActivityServiceImpl implements SeckillActivityService {
         SeckillBusinessCache<List<SeckillActivity>> seckillActivityListCache = seckillActivityListCacheService.getCachedActivities(status, version);
         // 活动不存在
         if (!seckillActivityListCache.isExist()) {
-            throw new SeckillException(HttpCode.ACTIVITY_NOT_EXISTS);
+            throw new SeckillException(ErrorCode.ACTIVITY_NOT_EXISTS);
         }
         // 稍后重试，前端需要对这个状态做特殊处理，即不去刷新数据，静默稍后重试
         if (seckillActivityListCache.isRetryLater()) {
-            throw new SeckillException(HttpCode.RETRY_LATER);
+            throw new SeckillException(ErrorCode.RETRY_LATER);
         }
         return seckillActivityListCache.getData().stream().map(seckillActivity -> {
             SeckillActivityDTO seckillActivityDTO = SeckillActivityBuilder.toSeckillActivityDTO(seckillActivity);
@@ -88,16 +89,16 @@ public class SeckillActivityServiceImpl implements SeckillActivityService {
     @Override
     public SeckillActivityDTO getSeckillActivity(Long id, Long version) {
         if (id == null) {
-            throw new SeckillException(HttpCode.PARAMS_INVALID);
+            throw new SeckillException(ErrorCode.PARAMS_INVALID);
         }
         SeckillBusinessCache<SeckillActivity> seckillActivityCache  = seckillActivityCacheService.getCachedSeckillActivity(id, version);
         // 缓存中的活动不存在
         if (!seckillActivityCache.isExist()) {
-            throw new SeckillException(HttpCode.ACTIVITY_NOT_EXISTS);
+            throw new SeckillException(ErrorCode.ACTIVITY_NOT_EXISTS);
         }
         // 稍后再试，前端需要对这个状态做特殊处理，即不去刷新数据，静默稍后再试
         if (seckillActivityCache.isRetryLater()) {
-            throw new SeckillException(HttpCode.RETRY_LATER);
+            throw new SeckillException(ErrorCode.RETRY_LATER);
         }
         SeckillActivityDTO seckillActivityDTO = SeckillActivityBuilder.toSeckillActivityDTO(seckillActivityCache.getData());
         seckillActivityDTO.setVersion(seckillActivityCache.getVersion());

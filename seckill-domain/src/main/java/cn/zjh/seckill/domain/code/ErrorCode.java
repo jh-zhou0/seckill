@@ -5,7 +5,7 @@ package cn.zjh.seckill.domain.code;
  * 
  * @author zjh - kayson
  */
-public enum HttpCode {
+public enum ErrorCode {
 
     SUCCESS(1001, "成功"),
     FAILURE(2001, "失败"),
@@ -32,7 +32,7 @@ public enum HttpCode {
     private final Integer code;
     private final String message;
 
-    HttpCode(Integer code, String message) {
+    ErrorCode(Integer code, String message) {
         this.code = code;
         this.message = message;
     }

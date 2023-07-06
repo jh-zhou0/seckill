@@ -1,6 +1,6 @@
 package cn.zjh.seckill.infrastructure.handler.exception;
 
-import cn.zjh.seckill.domain.code.HttpCode;
+import cn.zjh.seckill.domain.code.ErrorCode;
 import cn.zjh.seckill.domain.exception.SeckillException;
 import cn.zjh.seckill.domain.response.ResponseMessage;
 import cn.zjh.seckill.domain.response.ResponseMessageBuilder;
@@ -34,7 +34,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseMessage<String> handleException(Exception e) {
         logger.error("[Exception]服务器抛出了异常：{}", e.getMessage());
-        return ResponseMessageBuilder.build(HttpCode.SERVER_EXCEPTION.getCode(), e.getMessage());
+        return ResponseMessageBuilder.build(ErrorCode.SERVER_EXCEPTION.getCode(), e.getMessage());
     }
     
 }

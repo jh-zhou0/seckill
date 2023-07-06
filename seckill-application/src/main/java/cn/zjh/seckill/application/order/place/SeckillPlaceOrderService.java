@@ -1,7 +1,7 @@
 package cn.zjh.seckill.application.order.place;
 
 import cn.zjh.seckill.application.command.SeckillOrderCommand;
-import cn.zjh.seckill.domain.code.HttpCode;
+import cn.zjh.seckill.domain.code.ErrorCode;
 import cn.zjh.seckill.domain.dto.SeckillGoodsDTO;
 import cn.zjh.seckill.domain.enums.SeckillGoodsStatus;
 import cn.zjh.seckill.domain.enums.SeckillOrderStatus;
@@ -49,25 +49,25 @@ public interface SeckillPlaceOrderService {
     default void checkSeckillGoods(SeckillOrderCommand seckillOrderCommand, SeckillGoodsDTO seckillGoods){
         // 商品不存在
         if (seckillGoods == null){
-            throw new SeckillException(HttpCode.GOODS_NOT_EXISTS);
+            throw new SeckillException(ErrorCode.GOODS_NOT_EXISTS);
         }
         // 商品未上线
         if (Objects.equals(seckillGoods.getStatus(), SeckillGoodsStatus.PUBLISHED.getCode())){
-            throw new SeckillException(HttpCode.GOODS_PUBLISH);
+            throw new SeckillException(ErrorCode.GOODS_PUBLISH);
         }
         // 商品已下架
         if (Objects.equals(seckillGoods.getStatus(), SeckillGoodsStatus.OFFLINE.getCode())){
-            throw new SeckillException(HttpCode.GOODS_OFFLINE);
+            throw new SeckillException(ErrorCode.GOODS_OFFLINE);
         }
         // 触发限购
         if (seckillGoods.getLimitNum() < seckillOrderCommand.getQuantity()){
-            throw new SeckillException(HttpCode.BEYOND_LIMIT_NUM);
+            throw new SeckillException(ErrorCode.BEYOND_LIMIT_NUM);
         }
         // 库存不足
         if (seckillGoods.getAvailableStock() == null
                 || seckillGoods.getAvailableStock() <= 0
                 || seckillOrderCommand.getQuantity() > seckillGoods.getAvailableStock()){
-            throw new SeckillException(HttpCode.STOCK_LT_ZERO);
+            throw new SeckillException(ErrorCode.STOCK_LT_ZERO);
         }
     }
     

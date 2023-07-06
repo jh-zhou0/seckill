@@ -1,6 +1,6 @@
 package cn.zjh.seckill.infrastructure.repository;
 
-import cn.zjh.seckill.domain.code.HttpCode;
+import cn.zjh.seckill.domain.code.ErrorCode;
 import cn.zjh.seckill.domain.exception.SeckillException;
 import cn.zjh.seckill.domain.model.SeckillOrder;
 import cn.zjh.seckill.domain.repository.SeckillOrderRepository;
@@ -24,7 +24,7 @@ public class SeckillOrderRepositoryImpl implements SeckillOrderRepository {
     @Override
     public boolean saveSeckillOrder(SeckillOrder seckillOrder) {
         if (seckillOrder == null) {
-            throw new SeckillException(HttpCode.PARAMS_INVALID);
+            throw new SeckillException(ErrorCode.PARAMS_INVALID);
         }
        return seckillOrderMapper.saveSeckillOrder(seckillOrder) == 1;
     }

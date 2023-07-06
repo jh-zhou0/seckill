@@ -1,6 +1,6 @@
 package cn.zjh.seckill.domain.service.impl;
 
-import cn.zjh.seckill.domain.code.HttpCode;
+import cn.zjh.seckill.domain.code.ErrorCode;
 import cn.zjh.seckill.domain.enums.SeckillGoodsStatus;
 import cn.zjh.seckill.domain.event.SeckillGoodsEvent;
 import cn.zjh.seckill.domain.event.publisher.EventPublisher;
@@ -35,7 +35,7 @@ public class SeckillGoodsDomainServiceImpl implements SeckillGoodsDomainService 
     public void saveSeckillGoods(SeckillGoods seckillGoods) {
         logger.info("SeckillGoodsPublish|发布秒杀商品|{}", JSON.toJSON(seckillGoods));
         if (seckillGoods == null || !seckillGoods.validateParams()) {
-            throw new SeckillException(HttpCode.PARAMS_INVALID);
+            throw new SeckillException(ErrorCode.PARAMS_INVALID);
         }
         seckillGoods.setStatus(SeckillGoodsStatus.PUBLISHED.getCode());
         seckillGoodsRepository.saveSeckillGoods(seckillGoods);
@@ -60,11 +60,11 @@ public class SeckillGoodsDomainServiceImpl implements SeckillGoodsDomainService 
     public void updateStatus(Integer status, Long id) {
         logger.info("SeckillGoodsPublish|更新秒杀商品状态|{},{}", status, id);
         if (status == null || id == null){
-            throw new SeckillException(HttpCode.PARAMS_INVALID);
+            throw new SeckillException(ErrorCode.PARAMS_INVALID);
         }
         SeckillGoods seckillGoods = seckillGoodsRepository.getSeckillGoodsById(id);
         if (seckillGoods == null) {
-            throw new SeckillException(HttpCode.GOODS_NOT_EXISTS);
+            throw new SeckillException(ErrorCode.GOODS_NOT_EXISTS);
         }
         // 更新状态
         seckillGoodsRepository.updateStatus(status, id);
@@ -79,11 +79,11 @@ public class SeckillGoodsDomainServiceImpl implements SeckillGoodsDomainService 
     public boolean updateAvailableStock(Integer count, Long id) {
         logger.info("SeckillGoodsPublish|更新秒杀商品库存|{}", id);
         if (count == null || count <= 0 || id == null) {
-            throw new SeckillException(HttpCode.PARAMS_INVALID);
+            throw new SeckillException(ErrorCode.PARAMS_INVALID);
         }
         SeckillGoods seckillGoods = seckillGoodsRepository.getSeckillGoodsById(id);
         if (seckillGoods == null) {
-            throw new SeckillException(HttpCode.GOODS_NOT_EXISTS);
+            throw new SeckillException(ErrorCode.GOODS_NOT_EXISTS);
         }
         // 更新库存
         boolean isUpdate = seckillGoodsRepository.updateAvailableStock(count, id) > 0;
@@ -102,7 +102,7 @@ public class SeckillGoodsDomainServiceImpl implements SeckillGoodsDomainService 
     public boolean updateDBAvailableStock(Integer count, Long id) {
         logger.info("SeckillGoodsPublish|更新秒杀商品库存|{}", id);
         if (count == null || count <= 0 || id == null){
-            throw new SeckillException(HttpCode.PARAMS_INVALID);
+            throw new SeckillException(ErrorCode.PARAMS_INVALID);
         }
         return seckillGoodsRepository.updateAvailableStock(count, id) > 0;
     }

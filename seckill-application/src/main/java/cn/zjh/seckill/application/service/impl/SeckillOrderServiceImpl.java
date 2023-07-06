@@ -3,7 +3,7 @@ package cn.zjh.seckill.application.service.impl;
 import cn.zjh.seckill.application.command.SeckillOrderCommand;
 import cn.zjh.seckill.application.order.place.SeckillPlaceOrderService;
 import cn.zjh.seckill.application.service.SeckillOrderService;
-import cn.zjh.seckill.domain.code.HttpCode;
+import cn.zjh.seckill.domain.code.ErrorCode;
 import cn.zjh.seckill.domain.exception.SeckillException;
 import cn.zjh.seckill.domain.model.SeckillOrder;
 import cn.zjh.seckill.domain.service.SeckillOrderDomainService;
@@ -30,7 +30,7 @@ public class SeckillOrderServiceImpl implements SeckillOrderService {
     @Transactional(rollbackFor = Exception.class)
     public Long saveSeckillOrder(Long userId, SeckillOrderCommand seckillOrderCommand) {
         if (seckillOrderCommand == null) {
-            throw new SeckillException(HttpCode.PARAMS_INVALID);
+            throw new SeckillException(ErrorCode.PARAMS_INVALID);
         }
         return seckillPlaceOrderService.placeOrder(userId, seckillOrderCommand);
     }
