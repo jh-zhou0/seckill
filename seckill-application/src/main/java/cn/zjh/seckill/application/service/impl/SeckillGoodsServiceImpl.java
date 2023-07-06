@@ -63,7 +63,8 @@ public class SeckillGoodsServiceImpl implements SeckillGoodsService {
         // 将商品的库存同步到redis
         String stockKey = SeckillConstants.getKey(SeckillConstants.GOODS_ITEM_STOCK_KEY_PREFIX, String.valueOf(seckillGoods.getId()));
         try {
-            distributedCacheService.put(stockKey, seckillGoods.getInitialStock());
+            // distributedCacheService.put(stockKey, seckillGoods.getInitialStock());
+            distributedCacheService.initByLua(stockKey, seckillGoods.getInitialStock());
             seckillGoodsDomainService.saveSeckillGoods(seckillGoods);
         } catch (Exception e) {
             if (distributedCacheService.hasKey(stockKey)) {
