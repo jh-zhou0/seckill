@@ -16,7 +16,7 @@ public class LocalCacheFactory {
         return CacheBuilder.newBuilder()
                 .initialCapacity(15)
                 .concurrencyLevel(5)
-                .expireAfterWrite(5, TimeUnit.SECONDS)
+                .expireAfterWrite(10, TimeUnit.SECONDS)
                 .build();
     }
     

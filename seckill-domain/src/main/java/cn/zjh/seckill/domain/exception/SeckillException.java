@@ -1,6 +1,6 @@
 package cn.zjh.seckill.domain.exception;
 
-import cn.zjh.seckill.domain.code.HttpCode;
+import cn.zjh.seckill.domain.code.ErrorCode;
 
 /**
  * 自定义异常 
@@ -15,7 +15,7 @@ public class SeckillException extends RuntimeException {
         super(message);
     }
 
-    public SeckillException(HttpCode errorCode){
+    public SeckillException(ErrorCode errorCode){
         this(errorCode.getCode(), errorCode.getMessage());
     }
 

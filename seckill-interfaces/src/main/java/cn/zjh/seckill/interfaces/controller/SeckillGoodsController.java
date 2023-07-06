@@ -2,7 +2,7 @@ package cn.zjh.seckill.interfaces.controller;
 
 import cn.zjh.seckill.application.command.SeckillGoodsCommand;
 import cn.zjh.seckill.application.service.SeckillGoodsService;
-import cn.zjh.seckill.domain.code.HttpCode;
+import cn.zjh.seckill.domain.code.ErrorCode;
 import cn.zjh.seckill.domain.dto.SeckillGoodsDTO;
 import cn.zjh.seckill.domain.model.SeckillGoods;
 import cn.zjh.seckill.domain.response.ResponseMessage;
@@ -30,9 +30,9 @@ public class SeckillGoodsController {
      * 保存秒杀商品
      */
     @RequestMapping(value = "/saveSeckillGoods", method = {RequestMethod.GET, RequestMethod.POST})
-    public ResponseMessage<String> saveSeckillActivityDTO(SeckillGoodsCommand seckillGoodsCommand) {
+    public ResponseMessage<String> saveSeckillActivity(SeckillGoodsCommand seckillGoodsCommand) {
         seckillGoodsService.saveSeckillGoods(seckillGoodsCommand);
-        return ResponseMessageBuilder.build(HttpCode.SUCCESS.getCode());
+        return ResponseMessageBuilder.build(ErrorCode.SUCCESS.getCode());
     }
 
     /**
@@ -40,7 +40,7 @@ public class SeckillGoodsController {
      */
     @RequestMapping(value = "/getSeckillGoodsById", method = {RequestMethod.GET, RequestMethod.POST})
     public ResponseMessage<SeckillGoods> getSeckillGoodsId(Long id) {
-        return ResponseMessageBuilder.build(HttpCode.SUCCESS.getCode(), seckillGoodsService.getSeckillGoodsById(id));
+        return ResponseMessageBuilder.build(ErrorCode.SUCCESS.getCode(), seckillGoodsService.getSeckillGoodsById(id));
     }
 
     /**
@@ -48,7 +48,7 @@ public class SeckillGoodsController {
      */
     @RequestMapping(value = "/getSeckillGoods", method = {RequestMethod.GET, RequestMethod.POST})
     public ResponseMessage<SeckillGoodsDTO> getSeckillGoods(Long id, Long version) {
-        return ResponseMessageBuilder.build(HttpCode.SUCCESS.getCode(), seckillGoodsService.getSeckillGoods(id, version));
+        return ResponseMessageBuilder.build(ErrorCode.SUCCESS.getCode(), seckillGoodsService.getSeckillGoods(id, version));
     }
 
     /**
@@ -56,7 +56,7 @@ public class SeckillGoodsController {
      */
     @RequestMapping(value = "/getSeckillGoodsByActivityId", method = {RequestMethod.GET, RequestMethod.POST})
     public ResponseMessage<List<SeckillGoods>> getSeckillGoodsByActivityId(Long activityId) {
-        return ResponseMessageBuilder.build(HttpCode.SUCCESS.getCode(), seckillGoodsService.getSeckillGoodsByActivityId(activityId));
+        return ResponseMessageBuilder.build(ErrorCode.SUCCESS.getCode(), seckillGoodsService.getSeckillGoodsByActivityId(activityId));
     }
 
     /**
@@ -64,7 +64,7 @@ public class SeckillGoodsController {
      */
     @RequestMapping(value = "/getSeckillGoodsList", method = {RequestMethod.GET, RequestMethod.POST})
     public ResponseMessage<List<SeckillGoodsDTO>> getSeckillGoodsList(Long activityId, Long version) {
-        return ResponseMessageBuilder.build(HttpCode.SUCCESS.getCode(), seckillGoodsService.getSeckillGoodsList(activityId, version));
+        return ResponseMessageBuilder.build(ErrorCode.SUCCESS.getCode(), seckillGoodsService.getSeckillGoodsList(activityId, version));
     }
 
     /**
@@ -73,7 +73,7 @@ public class SeckillGoodsController {
     @RequestMapping(value = "/updateStatus", method = {RequestMethod.GET, RequestMethod.POST})
     public ResponseMessage<String> updateStatus(Integer status, Long id) {
         seckillGoodsService.updateStatus(status, id);
-        return ResponseMessageBuilder.build(HttpCode.SUCCESS.getCode());
+        return ResponseMessageBuilder.build(ErrorCode.SUCCESS.getCode());
     }
 
 }

@@ -2,7 +2,7 @@ package cn.zjh.seckill.application.service.impl;
 
 import cn.zjh.seckill.application.service.RedisService;
 import cn.zjh.seckill.application.service.SeckillUserService;
-import cn.zjh.seckill.domain.code.HttpCode;
+import cn.zjh.seckill.domain.code.ErrorCode;
 import cn.zjh.seckill.domain.constants.SeckillConstants;
 import cn.zjh.seckill.domain.exception.SeckillException;
 import cn.zjh.seckill.domain.model.SeckillUser;
@@ -41,18 +41,18 @@ public class SeckillUserServiceImpl implements SeckillUserService {
     @Override
     public String login(String userName, String password) {
         if (!StringUtils.hasText(userName)){
-            throw new SeckillException(HttpCode.USERNAME_IS_NULL);
+            throw new SeckillException(ErrorCode.USERNAME_IS_NULL);
         }
         if (!StringUtils.hasText(password)){
-            throw new SeckillException(HttpCode.PASSWORD_IS_NULL);
+            throw new SeckillException(ErrorCode.PASSWORD_IS_NULL);
         }
         SeckillUser seckillUser = seckillUserRepository.getSeckillUserByUserName(userName);
         if (seckillUser == null){
-            throw new SeckillException(HttpCode.USERNAME_IS_ERROR);
+            throw new SeckillException(ErrorCode.USERNAME_IS_ERROR);
         }
         String paramsPassword = CommonUtils.encryptPassword(password, userName);
         if (!paramsPassword.equals(seckillUser.getPassword())){
-            throw new SeckillException(HttpCode.PASSWORD_IS_ERROR);
+            throw new SeckillException(ErrorCode.PASSWORD_IS_ERROR);
         }
         String token = JwtUtils.sign(seckillUser.getId());
         String key = SeckillConstants.getKey(SeckillConstants.USER_KEY_PREFIX, String.valueOf(seckillUser.getId()));

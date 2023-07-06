@@ -1,6 +1,6 @@
 package cn.zjh.seckill.infrastructure.repository;
 
-import cn.zjh.seckill.domain.code.HttpCode;
+import cn.zjh.seckill.domain.code.ErrorCode;
 import cn.zjh.seckill.domain.exception.SeckillException;
 import cn.zjh.seckill.domain.model.SeckillActivity;
 import cn.zjh.seckill.domain.repository.SeckillActivityRepository;
@@ -25,7 +25,7 @@ public class SeckillActivityRepositoryImpl implements SeckillActivityRepository 
     @Override
     public void saveSeckillActivity(SeckillActivity seckillActivity) {
         if (seckillActivity == null) {
-            throw new SeckillException(HttpCode.PARAMS_INVALID);
+            throw new SeckillException(ErrorCode.PARAMS_INVALID);
         }
         seckillActivityMapper.saveSeckillActivity(seckillActivity);
     }

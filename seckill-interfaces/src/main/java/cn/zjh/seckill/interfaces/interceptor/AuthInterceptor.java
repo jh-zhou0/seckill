@@ -1,10 +1,9 @@
 package cn.zjh.seckill.interfaces.interceptor;
 
-import cn.zjh.seckill.domain.code.HttpCode;
+import cn.zjh.seckill.domain.code.ErrorCode;
 import cn.zjh.seckill.domain.constants.SeckillConstants;
 import cn.zjh.seckill.domain.exception.SeckillException;
 import cn.zjh.seckill.infrastructure.shiro.utils.JwtUtils;
-import org.springframework.http.client.support.HttpRequestWrapper;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -31,11 +30,11 @@ public class AuthInterceptor implements HandlerInterceptor {
         }
         String token = request.getHeader(SeckillConstants.TOKEN_HEADER_NAME);
         if (!StringUtils.hasText(token)) {
-            throw new SeckillException(HttpCode.USER_NOT_LOGIN);
+            throw new SeckillException(ErrorCode.USER_NOT_LOGIN);
         }
         Long userId = JwtUtils.getUserId(token);
         if (userId == null) {
-            throw new SeckillException(HttpCode.USER_NOT_LOGIN);
+            throw new SeckillException(ErrorCode.USER_NOT_LOGIN);
         }
         HttpServletRequestWrapper wrapper = new HttpServletRequestWrapper(request);
         wrapper.setAttribute(USER_ID, userId);

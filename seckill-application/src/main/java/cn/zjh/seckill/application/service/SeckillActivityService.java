@@ -1,5 +1,6 @@
 package cn.zjh.seckill.application.service;
 
+import cn.zjh.seckill.application.command.SeckillActivityCommand;
 import cn.zjh.seckill.domain.dto.SeckillActivityDTO;
 import cn.zjh.seckill.domain.model.SeckillActivity;
 
@@ -16,7 +17,7 @@ public interface SeckillActivityService {
     /**
      * 保存活动信息
      */
-    void saveSeckillActivityDTO(SeckillActivityDTO seckillActivityDTO);
+    void saveSeckillActivity(SeckillActivityCommand seckillActivityCommand);
 
     /**
      * 根据状态获取活动列表

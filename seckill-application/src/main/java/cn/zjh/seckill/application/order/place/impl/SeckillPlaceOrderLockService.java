@@ -3,7 +3,7 @@ package cn.zjh.seckill.application.order.place.impl;
 import cn.zjh.seckill.application.command.SeckillOrderCommand;
 import cn.zjh.seckill.application.order.place.SeckillPlaceOrderService;
 import cn.zjh.seckill.application.service.SeckillGoodsService;
-import cn.zjh.seckill.domain.code.HttpCode;
+import cn.zjh.seckill.domain.code.ErrorCode;
 import cn.zjh.seckill.domain.constants.SeckillConstants;
 import cn.zjh.seckill.domain.dto.SeckillGoodsDTO;
 import cn.zjh.seckill.domain.exception.SeckillException;
@@ -60,13 +60,13 @@ public class SeckillPlaceOrderLockService implements SeckillPlaceOrderService {
             boolean isSuccessLock = lock.tryLock(2, 5, TimeUnit.SECONDS);
             // 未获取到分布式锁，稍后重试
             if (!isSuccessLock) {
-                throw new SeckillException(HttpCode.RETRY_LATER);
+                throw new SeckillException(ErrorCode.RETRY_LATER);
             }
             // 查询库存信息
             Integer stock = distributedCacheService.getObject(stockKey, Integer.class);
             // 库存不足
             if (stock < seckillOrderCommand.getQuantity()) {
-                throw new SeckillException(HttpCode.STOCK_LT_ZERO);
+                throw new SeckillException(ErrorCode.STOCK_LT_ZERO);
             }
             // 扣减库存
             distributedCacheService.decrement(stockKey, seckillOrderCommand.getQuantity());

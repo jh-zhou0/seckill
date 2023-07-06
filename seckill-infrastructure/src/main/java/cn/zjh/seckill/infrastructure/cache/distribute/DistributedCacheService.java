@@ -63,9 +63,4 @@ public interface DistributedCacheService {
         return null;
     }
 
-    /**
-     * 检测结果Lua执行结果
-     */
-    default void checkResult(Long result){}
-
 }

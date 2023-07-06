@@ -7,6 +7,8 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
+ * 活动
+ * 
  * @author zjh - kayson
  */
 public class SeckillActivityDTO implements Serializable {

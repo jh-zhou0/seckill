@@ -3,8 +3,10 @@ package cn.zjh.seckill.application.order.place.impl;
 import cn.zjh.seckill.application.command.SeckillOrderCommand;
 import cn.zjh.seckill.application.order.place.SeckillPlaceOrderService;
 import cn.zjh.seckill.application.service.SeckillGoodsService;
+import cn.zjh.seckill.domain.code.ErrorCode;
 import cn.zjh.seckill.domain.constants.SeckillConstants;
 import cn.zjh.seckill.domain.dto.SeckillGoodsDTO;
+import cn.zjh.seckill.domain.exception.SeckillException;
 import cn.zjh.seckill.domain.model.SeckillOrder;
 import cn.zjh.seckill.domain.service.SeckillOrderDomainService;
 import cn.zjh.seckill.infrastructure.cache.distribute.DistributedCacheService;
@@ -41,7 +43,7 @@ public class SeckillPlaceOrderLuaService implements SeckillPlaceOrderService {
             // 扣减缓存中的库存
             Long result = distributedCacheService.decrementByLua(stockKey, seckillOrderCommand.getQuantity());
             // 检查lua脚本执行结果
-            distributedCacheService.checkResult(result);
+            checkResult(result);
             isDecrementStock = true;
             // 构建订单，保存
             SeckillOrder seckillOrder = buildSeckillOrder(userId, seckillOrderCommand, seckillGoods);
@@ -55,6 +57,18 @@ public class SeckillPlaceOrderLuaService implements SeckillPlaceOrderService {
                 distributedCacheService.incrementByLua(stockKey, seckillOrderCommand.getQuantity());
             }
             throw e;
+        }
+    }
+
+    private void checkResult(Long result) {
+        if (result == SeckillConstants.LUA_RESULT_GOODS_STOCK_NOT_EXISTS) {
+            throw new SeckillException(ErrorCode.STOCK_IS_NULL);
+        }
+        if (result == SeckillConstants.LUA_RESULT_GOODS_STOCK_PARAMS_LT_ZERO){
+            throw new SeckillException(ErrorCode.PARAMS_INVALID);
+        }
+        if (result == SeckillConstants.LUA_RESULT_GOODS_STOCK_LT_ZERO){
+            throw new SeckillException(ErrorCode.STOCK_LT_ZERO);
         }
     }
     

@@ -1,7 +1,8 @@
 package cn.zjh.seckill.interfaces.controller;
 
+import cn.zjh.seckill.application.command.SeckillActivityCommand;
 import cn.zjh.seckill.application.service.SeckillActivityService;
-import cn.zjh.seckill.domain.code.HttpCode;
+import cn.zjh.seckill.domain.code.ErrorCode;
 import cn.zjh.seckill.domain.dto.SeckillActivityDTO;
 import cn.zjh.seckill.domain.model.SeckillActivity;
 import cn.zjh.seckill.domain.response.ResponseMessage;
@@ -28,9 +29,9 @@ public class SeckillActivityController {
      * 保存秒杀活动
      */
     @RequestMapping(value = "/saveSeckillActivity", method = {RequestMethod.GET, RequestMethod.POST})
-    public ResponseMessage<String> saveSeckillActivityDTO(@RequestBody SeckillActivityDTO seckillActivityDTO) {
-        seckillActivityService.saveSeckillActivityDTO(seckillActivityDTO);
-        return ResponseMessageBuilder.build(HttpCode.SUCCESS.getCode());
+    public ResponseMessage<String> saveSeckillActivity(SeckillActivityCommand seckillActivityCommand) {
+        seckillActivityService.saveSeckillActivity(seckillActivityCommand);
+        return ResponseMessageBuilder.build(ErrorCode.SUCCESS.getCode());
     }
 
     /**
@@ -38,7 +39,7 @@ public class SeckillActivityController {
      */
     @RequestMapping(value = "/getSeckillActivityList", method = {RequestMethod.GET, RequestMethod.POST})
     public ResponseMessage<List<SeckillActivity>> getSeckillActivityList(@RequestParam(value = "status", required = false) Integer status) {
-        return ResponseMessageBuilder.build(HttpCode.SUCCESS.getCode(), seckillActivityService.getSeckillActivityList(status));
+        return ResponseMessageBuilder.build(ErrorCode.SUCCESS.getCode(), seckillActivityService.getSeckillActivityList(status));
     }
 
     /**
@@ -47,16 +48,16 @@ public class SeckillActivityController {
     @RequestMapping(value = "/seckillActivityList", method = {RequestMethod.GET, RequestMethod.POST})
     public ResponseMessage<List<SeckillActivityDTO>> getSeckillActivityList(@RequestParam(value = "status", required = false) Integer status,
                                                                             @RequestParam(value = "version", required = false) Long version) {
-        return ResponseMessageBuilder.build(HttpCode.SUCCESS.getCode(), seckillActivityService.getSeckillActivityList(status, version));
+        return ResponseMessageBuilder.build(ErrorCode.SUCCESS.getCode(), seckillActivityService.getSeckillActivityList(status, version));
     }
 
     /**
      * 根据id获取秒杀活动详情
      */
-    @RequestMapping(value = "/seckillActivity", method = {RequestMethod.GET,RequestMethod.POST})
+    @RequestMapping(value = "/seckillActivity", method = {RequestMethod.GET, RequestMethod.POST})
     public ResponseMessage<SeckillActivityDTO> getSeckillActivityById(@RequestParam(value = "id", required = false) Long id,
-                                                                      @RequestParam(value = "version", required = false) Long version){
-        return ResponseMessageBuilder.build(HttpCode.SUCCESS.getCode(), seckillActivityService.getSeckillActivity(id, version));
+                                                                      @RequestParam(value = "version", required = false) Long version) {
+        return ResponseMessageBuilder.build(ErrorCode.SUCCESS.getCode(), seckillActivityService.getSeckillActivity(id, version));
     }
 
     /**
@@ -66,7 +67,7 @@ public class SeckillActivityController {
     public ResponseMessage<List<SeckillActivity>> getSeckillActivityListBetweenStartTimeAndEndTime(@RequestParam(value = "currentTime", required = false) String currentTime,
                                                                                                    @RequestParam(value = "status", required = false) Integer status) {
         List<SeckillActivity> seckillActivityList = seckillActivityService.getSeckillActivityListBetweenStartTimeAndEndTime(JodaDateTimeUtils.parseStringToDate(currentTime, JodaDateTimeUtils.DATE_TIME_FORMAT), status);
-        return ResponseMessageBuilder.build(HttpCode.SUCCESS.getCode(), seckillActivityList);
+        return ResponseMessageBuilder.build(ErrorCode.SUCCESS.getCode(), seckillActivityList);
     }
 
     /**
@@ -74,7 +75,7 @@ public class SeckillActivityController {
      */
     @RequestMapping(value = "/getSeckillActivityById", method = {RequestMethod.GET, RequestMethod.POST})
     public ResponseMessage<SeckillActivity> getSeckillActivityById(@RequestParam(value = "id", required = false) Long id) {
-        return ResponseMessageBuilder.build(HttpCode.SUCCESS.getCode(), seckillActivityService.getSeckillActivityById(id));
+        return ResponseMessageBuilder.build(ErrorCode.SUCCESS.getCode(), seckillActivityService.getSeckillActivityById(id));
     }
 
     /**
@@ -84,7 +85,7 @@ public class SeckillActivityController {
     public ResponseMessage<String> updateStatus(@RequestParam(value = "status", required = false) Integer status,
                                                 @RequestParam(value = "id", required = false) Long id) {
         seckillActivityService.updateStatus(status, id);
-        return ResponseMessageBuilder.build(HttpCode.SUCCESS.getCode());
+        return ResponseMessageBuilder.build(ErrorCode.SUCCESS.getCode());
     }
 
 }

@@ -1,6 +1,6 @@
 package cn.zjh.seckill.domain.service.impl;
 
-import cn.zjh.seckill.domain.code.HttpCode;
+import cn.zjh.seckill.domain.code.ErrorCode;
 import cn.zjh.seckill.domain.enums.SeckillActivityStatus;
 import cn.zjh.seckill.domain.event.SeckillActivityEvent;
 import cn.zjh.seckill.domain.event.publisher.EventPublisher;
@@ -36,7 +36,7 @@ public class SeckillActivityDomainServiceImpl implements SeckillActivityDomainSe
     public void saveSeckillActivity(SeckillActivity seckillActivity) {
         logger.info("SeckillActivityPublish|发布秒杀活动|{}", JSON.toJSON(seckillActivity));
         if (seckillActivity == null || !seckillActivity.validateParams()) {
-            throw new SeckillException(HttpCode.PARAMS_INVALID);
+            throw new SeckillException(ErrorCode.PARAMS_INVALID);
         }
         seckillActivity.setStatus(SeckillActivityStatus.PUBLISHED.getCode());
         seckillActivityRepository.saveSeckillActivity(seckillActivity);
@@ -59,7 +59,7 @@ public class SeckillActivityDomainServiceImpl implements SeckillActivityDomainSe
     @Override
     public SeckillActivity getSeckillActivityById(Long id) {
         if (id == null){
-            throw new SeckillException(HttpCode.ACTIVITY_NOT_EXISTS);
+            throw new SeckillException(ErrorCode.ACTIVITY_NOT_EXISTS);
         }
         return seckillActivityRepository.getSeckillActivityById(id);
     }
@@ -68,7 +68,7 @@ public class SeckillActivityDomainServiceImpl implements SeckillActivityDomainSe
     public void updateStatus(Integer status, Long id) {
         logger.info("SeckillActivityPublish|更新秒杀活动状态|{},{}", status, id);
         if (status == null || id == null){
-            throw new SeckillException(HttpCode.PARAMS_INVALID);
+            throw new SeckillException(ErrorCode.PARAMS_INVALID);
         }
         seckillActivityRepository.updateStatus(status, id);
         logger.info("SeckillActivityPublish|发布秒杀活动状态事件|{},{}", status, id);
