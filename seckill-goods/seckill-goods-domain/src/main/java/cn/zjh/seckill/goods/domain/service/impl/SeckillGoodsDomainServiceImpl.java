@@ -99,15 +99,6 @@ public class SeckillGoodsDomainServiceImpl implements SeckillGoodsDomainService 
     }
 
     @Override
-    public boolean updateDBAvailableStock(Integer count, Long id) {
-        logger.info("SeckillGoodsPublish|更新秒杀商品库存|{}", id);
-        if (count == null || count <= 0 || id == null){
-            throw new SeckillException(ErrorCode.PARAMS_INVALID);
-        }
-        return seckillGoodsRepository.updateAvailableStock(count, id) > 0;
-    }
-
-    @Override
     public Integer getAvailableStockById(Long id) {
         return seckillGoodsRepository.getAvailableStockById(id);
     }

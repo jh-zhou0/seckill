@@ -110,13 +110,8 @@ public class SeckillGoodsServiceImpl implements SeckillGoodsService {
     }
 
     @Override
-    public void updateAvailableStock(Integer count, Long id) {
-        seckillGoodsDomainService.updateAvailableStock(count, id);
-    }
-
-    @Override
-    public boolean updateDBAvailableStock(Integer count, Long id) {
-        return seckillGoodsDomainService.updateDBAvailableStock(count, id);
+    public boolean updateAvailableStock(Integer count, Long id) {
+        return seckillGoodsDomainService.updateAvailableStock(count, id);
     }
 
     @Override

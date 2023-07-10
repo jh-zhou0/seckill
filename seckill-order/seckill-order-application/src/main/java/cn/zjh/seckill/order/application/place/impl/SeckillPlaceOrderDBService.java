@@ -34,7 +34,7 @@ public class SeckillPlaceOrderDBService implements SeckillPlaceOrderService {
         // 检测商品信息
         checkSeckillGoods(seckillOrderCommand, seckillGoods);
         // 扣减库存不成功，则库存不足
-        if (!seckillGoodsDubboService.updateDBAvailableStock(seckillOrderCommand.getQuantity(), seckillOrderCommand.getGoodsId())) {
+        if (!seckillGoodsDubboService.updateAvailableStock(seckillOrderCommand.getQuantity(), seckillOrderCommand.getGoodsId())) {
             throw new SeckillException(ErrorCode.STOCK_LT_ZERO);
         }
         // 构建订单

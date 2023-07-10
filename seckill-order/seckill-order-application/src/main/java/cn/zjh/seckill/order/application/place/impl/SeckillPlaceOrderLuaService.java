@@ -50,7 +50,9 @@ public class SeckillPlaceOrderLuaService implements SeckillPlaceOrderService {
             SeckillOrder seckillOrder = buildSeckillOrder(userId, seckillOrderCommand, seckillGoods);
             seckillOrderDomainService.saveSeckillOrder(seckillOrder);
             // 扣减数据库中的库存
-            seckillGoodsDubboService.updateDBAvailableStock(seckillOrderCommand.getQuantity(), seckillOrderCommand.getGoodsId());
+            seckillGoodsDubboService.updateAvailableStock(seckillOrderCommand.getQuantity(), seckillOrderCommand.getGoodsId());
+            // 手动抛个异常，测试分布式事务问题
+//            int i = 1 / 0;
             return seckillOrder.getId();
         } catch (Exception e) {
             if (isDecrementStock) {

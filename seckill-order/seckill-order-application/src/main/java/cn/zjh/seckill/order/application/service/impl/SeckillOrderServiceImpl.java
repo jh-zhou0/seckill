@@ -29,7 +29,7 @@ public class SeckillOrderServiceImpl implements SeckillOrderService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Long saveSeckillOrder(Long userId, SeckillOrderCommand seckillOrderCommand) {
-        if (seckillOrderCommand == null) {
+        if (seckillOrderCommand == null) {  
             throw new SeckillException(ErrorCode.PARAMS_INVALID);
         }
         return seckillPlaceOrderService.placeOrder(userId, seckillOrderCommand);

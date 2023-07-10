@@ -12,6 +12,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class SeckillOrderStarter {
 
     public static void main(String[] args) {
+        // fix -> org.apache.dubbo.common.cache.FileCacheStoreFactory$PathNotExclusiveException: C:\Users\zjh\.dubbo\.metadata.nacos192.168.100.99%003a8848.dubbo.cache is not exclusive.
+        System.setProperty("user.home", "/home/zjh/order");
         SpringApplication.run(SeckillOrderStarter.class, args);
     }
     
