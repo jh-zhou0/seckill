@@ -10,11 +10,11 @@ import cn.zjh.seckill.order.application.command.SeckillOrderCommand;
 import cn.zjh.seckill.order.application.place.SeckillPlaceOrderService;
 import cn.zjh.seckill.order.domain.model.entity.SeckillOrder;
 import com.alibaba.fastjson.JSONObject;
+import io.seata.spring.annotation.GlobalTransactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.concurrent.TimeUnit;
@@ -34,8 +34,8 @@ public class SeckillPlaceOrderLockService extends SeckillPlaceOrderBaseService i
     private DistributedLockFactory distributedLockFactory;
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
-    public Long placeOrder(Long userId, SeckillOrderCommand seckillOrderCommand, Long txNo) {
+    @GlobalTransactional(rollbackFor = Exception.class)
+    public Long placeOrder(Long userId, SeckillOrderCommand seckillOrderCommand) {
         // 获取商品信息(带缓存)
         SeckillGoodsDTO seckillGoods = seckillGoodsDubboService.getSeckillGoods(seckillOrderCommand.getGoodsId(), seckillOrderCommand.getVersion());
         // 检测商品信息
@@ -68,12 +68,10 @@ public class SeckillPlaceOrderLockService extends SeckillPlaceOrderBaseService i
             isDecrementCacheStock = true;
             // 构建订单
             SeckillOrder seckillOrder = buildSeckillOrder(userId, seckillOrderCommand, seckillGoods);
-            // 巧妙的使用事务编号作为订单id，避免过多资源浪费，也可以使用其他方式生成订单id
-            seckillOrder.setId(txNo);
             // 保存订单
             seckillOrderDomainService.saveSeckillOrder(seckillOrder);
             // 扣减数据库库存
-            seckillGoodsDubboService.updateAvailableStock(seckillOrderCommand.getQuantity(), seckillOrderCommand.getGoodsId(), txNo);
+            seckillGoodsDubboService.updateAvailableStock(seckillOrderCommand.getQuantity(), seckillOrderCommand.getGoodsId());
             // 返回订单id
             return seckillOrder.getId();
         } catch (Exception e) {

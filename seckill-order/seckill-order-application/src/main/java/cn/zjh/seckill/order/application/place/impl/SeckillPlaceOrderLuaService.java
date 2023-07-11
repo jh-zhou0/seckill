@@ -7,9 +7,9 @@ import cn.zjh.seckill.common.model.dto.SeckillGoodsDTO;
 import cn.zjh.seckill.order.application.command.SeckillOrderCommand;
 import cn.zjh.seckill.order.application.place.SeckillPlaceOrderService;
 import cn.zjh.seckill.order.domain.model.entity.SeckillOrder;
+import io.seata.spring.annotation.GlobalTransactional;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 基于lua脚本防止库存超卖
@@ -21,8 +21,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class SeckillPlaceOrderLuaService extends SeckillPlaceOrderBaseService implements SeckillPlaceOrderService {
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
-    public Long placeOrder(Long userId, SeckillOrderCommand seckillOrderCommand, Long txNo) {
+    @GlobalTransactional(rollbackFor = Exception.class)
+    public Long placeOrder(Long userId, SeckillOrderCommand seckillOrderCommand) {
         boolean isDecrementStock = false;
         SeckillGoodsDTO seckillGoods = seckillGoodsDubboService.getSeckillGoods(seckillOrderCommand.getGoodsId(), seckillOrderCommand.getVersion());
         // 检测商品
@@ -37,11 +37,11 @@ public class SeckillPlaceOrderLuaService extends SeckillPlaceOrderBaseService im
             isDecrementStock = true;
             // 构建订单，保存
             SeckillOrder seckillOrder = buildSeckillOrder(userId, seckillOrderCommand, seckillGoods);
-            // 巧妙的使用事务编号作为订单id，避免过多资源浪费，也可以使用其他方式生成订单id
-            seckillOrder.setId(txNo);
             seckillOrderDomainService.saveSeckillOrder(seckillOrder);
             // 扣减数据库中的库存
-            seckillGoodsDubboService.updateAvailableStock(seckillOrderCommand.getQuantity(), seckillOrderCommand.getGoodsId(), txNo);
+            seckillGoodsDubboService.updateAvailableStock(seckillOrderCommand.getQuantity(), seckillOrderCommand.getGoodsId());
+            // 手动抛个异常，测试分布式事务问题
+//            int i = 1 / 0;
             return seckillOrder.getId();
         } catch (Exception e) {
             if (isDecrementStock) {
