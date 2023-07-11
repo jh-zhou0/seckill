@@ -10,7 +10,6 @@ import cn.zjh.seckill.order.application.command.SeckillOrderCommand;
 import cn.zjh.seckill.order.application.place.SeckillPlaceOrderService;
 import cn.zjh.seckill.order.domain.model.entity.SeckillOrder;
 import com.alibaba.fastjson.JSONObject;
-import org.dromara.hmily.annotation.HmilyTCC;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -36,19 +35,7 @@ public class SeckillPlaceOrderLockService extends SeckillPlaceOrderBaseService i
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    @HmilyTCC(confirmMethod = "confirmMethod", cancelMethod = "cancelMethod")
     public Long placeOrder(Long userId, SeckillOrderCommand seckillOrderCommand, Long txNo) {
-        // 幂等处理
-        if (distributedCacheService.isMemberSet(orderTryKey, txNo)) {
-            logger.warn("placeOrder|基于分布式锁防止超卖的方法已经执行过Try方法,txNo:{}", txNo);
-            return txNo;
-        }
-        // 空回滚和悬挂处理
-        if (distributedCacheService.isMemberSet(orderConfirmKey, txNo)
-                || distributedCacheService.isMemberSet(orderCancelKey, txNo)) {
-            logger.warn("placeOrder|基于分布式锁防止超卖的方法已经执行过Confirm方法或者Cancel方法,txNo:{}", txNo);
-            return txNo;
-        }
         // 获取商品信息(带缓存)
         SeckillGoodsDTO seckillGoods = seckillGoodsDubboService.getSeckillGoods(seckillOrderCommand.getGoodsId(), seckillOrderCommand.getVersion());
         // 检测商品信息
@@ -60,8 +47,6 @@ public class SeckillPlaceOrderLockService extends SeckillPlaceOrderBaseService i
         String stockKey = SeckillConstants.getKey(SeckillConstants.GOODS_ITEM_STOCK_KEY_PREFIX, String.valueOf(seckillOrderCommand.getGoodsId()));
         // 是否扣减了缓存中的库存
         boolean isDecrementCacheStock = false;
-        // 是否保存try日志
-        boolean isSaveTryLog = false;
         try {
             boolean isSuccessLock = lock.tryLock(2, 5, TimeUnit.SECONDS);
             // 未获取到分布式锁，稍后重试
@@ -87,22 +72,14 @@ public class SeckillPlaceOrderLockService extends SeckillPlaceOrderBaseService i
             seckillOrder.setId(txNo);
             // 保存订单
             seckillOrderDomainService.saveSeckillOrder(seckillOrder);
-            // 保存try日志
-            distributedCacheService.addSet(orderTryKey, txNo);
-            isSaveTryLog = true;
             // 扣减数据库库存
             seckillGoodsDubboService.updateAvailableStock(seckillOrderCommand.getQuantity(), seckillOrderCommand.getGoodsId(), txNo);
-            // 手动抛个异常，测试分布式事务问题
-//            int i = 1 / 0;
             // 返回订单id
             return seckillOrder.getId();
         } catch (Exception e) {
             // 已经扣减了缓存中的库存，则需要增加回来
             if (isDecrementCacheStock) {
                 distributedCacheService.increment(stockKey, seckillOrderCommand.getQuantity());
-            }
-            if (isSaveTryLog) {
-                distributedCacheService.removeSet(orderTryKey, txNo);
             }
             if (e instanceof InterruptedException) {
                 logger.error("SeckillPlaceOrderLockService|下单分布式锁被中断|参数:{}|异常信息:{}", JSONObject.toJSONString(seckillOrderCommand), e.getMessage());
