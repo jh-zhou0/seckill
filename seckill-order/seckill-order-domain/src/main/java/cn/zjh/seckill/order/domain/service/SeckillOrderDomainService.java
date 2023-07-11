@@ -25,5 +25,10 @@ public interface SeckillOrderDomainService {
      * 根据活动id获取订单列表
      */
     List<SeckillOrder> getSeckillOrderByActivityId(Long activityId);
+
+    /**
+     * 删除订单，下单时异常由TCC分布式事务调用
+     */
+    void deleteSeckillOrder(Long orderId);
     
 }

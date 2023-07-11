@@ -1,6 +1,7 @@
 package cn.zjh.seckill.dubbo.interfaces.goods;
 
 import cn.zjh.seckill.common.model.dto.SeckillGoodsDTO;
+import org.dromara.hmily.annotation.Hmily;
 
 /**
  * 商品Dubbo服务接口
@@ -15,8 +16,9 @@ public interface SeckillGoodsDubboService {
     SeckillGoodsDTO getSeckillGoods(Long id, Long version);
 
     /**
-     * 扣减数据库库存
+     * 扣减商品库存
      */
-    boolean updateAvailableStock(Integer count, Long id);
+    @Hmily
+    boolean updateAvailableStock(Integer count, Long id, Long txNo);
 
 }

@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @Import({JdbcConfig.class, MyBatisConfig.class, RedisConfig.class})
 @ServletComponentScan(basePackages = {"cn.zjh.seckill"})
 @EnableTransactionManagement(proxyTargetClass = true)
+@EnableAspectJAutoProxy(exposeProxy = true)
 public class TransactionConfig {
 
     @Bean

@@ -12,6 +12,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class SeckillGoodsStarter {
 
     public static void main(String[] args) {
+        System.setProperty("user.home", "/home/zjh/goods");
         SpringApplication.run(SeckillGoodsStarter.class, args);
     }
     

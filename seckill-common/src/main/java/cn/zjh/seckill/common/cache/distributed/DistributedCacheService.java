@@ -30,6 +30,12 @@ public interface DistributedCacheService {
 
     Boolean hasKey(String key);
 
+    Long addSet(String key, Object ... values);
+
+    Long removeSet(String key, Object ... values);
+
+    Boolean isMemberSet(String key, Object o);
+
     /**
      * 扣减内存中的数据
      */

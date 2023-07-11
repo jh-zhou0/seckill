@@ -12,6 +12,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class SeckillActivityStarter {
 
     public static void main(String[] args) {
+        System.setProperty("user.home", "/home/zjh/activity");
         SpringApplication.run(SeckillActivityStarter.class, args);
     }
     

@@ -20,7 +20,7 @@
     <dependencies>
         <dependency>
             <groupId>cn.zjh.seckill</groupId>
-            <artifactId>seckill-dubbo-interfaces</artifactId>
+            <artifactId>seckill-common</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>

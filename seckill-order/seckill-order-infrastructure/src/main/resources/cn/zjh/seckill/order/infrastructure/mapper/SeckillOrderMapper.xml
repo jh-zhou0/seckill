@@ -31,5 +31,9 @@
     <select id="getSeckillOrderByActivityId" resultMap="baseResultMap">
         select <include refid="Base_Column_List"/> from seckill_order where activity_id = #{activityId}
     </select>
+
+    <delete id="deleteSeckillOrder">
+        delete from seckill_order where id = #{orderId}
+    </delete>
     
 </mapper>

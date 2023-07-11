@@ -26,4 +26,9 @@ public interface SeckillOrderRepository {
      */
     List<SeckillOrder> getSeckillOrderByActivityId(Long activityId);
 
+    /**
+     * 删除订单，下单时异常由TCC分布式事务调用
+     */
+    boolean deleteSeckillOrder(Long orderId);
+    
 }

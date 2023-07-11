@@ -37,6 +37,11 @@ public interface SeckillGoodsDomainService {
     boolean updateAvailableStock(Integer count, Long id);
 
     /**
+     * 增加库存
+     */
+    boolean incrementAvailableStock(Integer count, Long id);
+
+    /**
      * 获取当前可用库存
      */
     Integer getAvailableStockById(Long id);

@@ -115,6 +115,11 @@ public class SeckillGoodsServiceImpl implements SeckillGoodsService {
     }
 
     @Override
+    public boolean incrementAvailableStock(Integer count, Long id) {
+        return seckillGoodsDomainService.incrementAvailableStock(count, id);
+    }
+
+    @Override
     public Integer getAvailableStockById(Long id) {
         return seckillGoodsDomainService.getAvailableStockById(id);
     }

@@ -6,7 +6,6 @@ import cn.zjh.seckill.common.model.dto.SeckillGoodsDTO;
 import cn.zjh.seckill.common.model.enums.SeckillGoodsStatus;
 import cn.zjh.seckill.common.model.enums.SeckillOrderStatus;
 import cn.zjh.seckill.common.utils.beans.BeanUtil;
-import cn.zjh.seckill.common.utils.id.SnowFlakeFactory;
 import cn.zjh.seckill.order.application.command.SeckillOrderCommand;
 import cn.zjh.seckill.order.domain.model.entity.SeckillOrder;
 
@@ -24,7 +23,7 @@ public interface SeckillPlaceOrderService {
     /**
      * 下单操作
      */
-    Long placeOrder(Long userId, SeckillOrderCommand seckillOrderCommand);
+    Long placeOrder(Long userId, SeckillOrderCommand seckillOrderCommand, Long txNo);
 
     /**
      * 构建订单
@@ -32,7 +31,6 @@ public interface SeckillPlaceOrderService {
     default SeckillOrder buildSeckillOrder(Long userId, SeckillOrderCommand seckillOrderCommand, SeckillGoodsDTO seckillGoods){
         SeckillOrder seckillOrder = new SeckillOrder();
         BeanUtil.copyProperties(seckillOrderCommand, seckillOrder);
-        seckillOrder.setId(SnowFlakeFactory.getSnowFlakeFromCache().nextId());
         seckillOrder.setGoodsName(seckillGoods.getGoodsName());
         seckillOrder.setUserId(userId);
         seckillOrder.setActivityPrice(seckillGoods.getActivityPrice());

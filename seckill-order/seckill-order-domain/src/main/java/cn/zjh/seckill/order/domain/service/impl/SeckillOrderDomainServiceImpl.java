@@ -61,5 +61,17 @@ public class SeckillOrderDomainServiceImpl implements SeckillOrderDomainService 
         }
         return seckillOrderRepository.getSeckillOrderByActivityId(activityId);
     }
-    
+
+    @Override
+    public void deleteSeckillOrder(Long orderId) {
+        if (orderId == null){
+            throw new SeckillException(ErrorCode.PARAMS_INVALID);
+        }
+        if (seckillOrderRepository.deleteSeckillOrder(orderId)) {
+            logger.info("deleteSeckillOrder|删除订单成功|{}", orderId);
+            SeckillOrderEvent seckillOrderEvent = new SeckillOrderEvent(orderId, SeckillOrderStatus.DELETED.getCode());
+            eventPublisher.publish(seckillOrderEvent);
+        }
+    }
+
 }

@@ -2,6 +2,7 @@ package cn.zjh.seckill.order.application.service.impl;
 
 import cn.zjh.seckill.common.exception.ErrorCode;
 import cn.zjh.seckill.common.exception.SeckillException;
+import cn.zjh.seckill.common.utils.id.SnowFlakeFactory;
 import cn.zjh.seckill.order.application.command.SeckillOrderCommand;
 import cn.zjh.seckill.order.application.place.SeckillPlaceOrderService;
 import cn.zjh.seckill.order.application.service.SeckillOrderService;
@@ -32,7 +33,7 @@ public class SeckillOrderServiceImpl implements SeckillOrderService {
         if (seckillOrderCommand == null) {  
             throw new SeckillException(ErrorCode.PARAMS_INVALID);
         }
-        return seckillPlaceOrderService.placeOrder(userId, seckillOrderCommand);
+        return seckillPlaceOrderService.placeOrder(userId, seckillOrderCommand, SnowFlakeFactory.getSnowFlakeFromCache().nextId());
     }
 
     @Override

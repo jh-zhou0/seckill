@@ -27,4 +27,9 @@ public interface SeckillOrderMapper {
      */
     List<SeckillOrder> getSeckillOrderByActivityId(@Param("activityId") Long activityId);
 
+    /**
+     * 删除订单，下单时异常由TCC分布式事务调用
+     */
+    int deleteSeckillOrder(@Param("orderId") Long orderId);
+    
 }

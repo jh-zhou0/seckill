@@ -8,6 +8,31 @@ package cn.zjh.seckill.common.constants;
 public class SeckillConstants {
 
     /**
+     * tcc try
+     */
+    public static final String ORDER_TRY_KEY_PREFIX = "order:try:";
+
+    /**
+     * tcc confirm
+     */
+    public static final String ORDER_CONFIRM_KEY_PREFIX = "order:confirm:";
+
+    /**
+     * tcc cancel
+     */
+    public static final String ORDER_CANCEL_KEY_PREFIX = "order:cancel:";
+
+    /**
+     * 订单
+     */
+    public static final String ORDER_KEY = "order";
+
+    /**
+     * 商品
+     */
+    public static final String GOODS_KEY = "goods";
+
+    /**
      * LUA脚本商品库存不存在
      */
     public static final int LUA_RESULT_GOODS_STOCK_NOT_EXISTS = -1;

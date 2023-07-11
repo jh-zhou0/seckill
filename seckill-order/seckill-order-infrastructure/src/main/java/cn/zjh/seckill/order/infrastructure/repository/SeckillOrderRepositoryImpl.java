@@ -38,5 +38,10 @@ public class SeckillOrderRepositoryImpl implements SeckillOrderRepository {
     public List<SeckillOrder> getSeckillOrderByActivityId(Long activityId) {
         return seckillOrderMapper.getSeckillOrderByActivityId(activityId);
     }
-    
+
+    @Override
+    public boolean deleteSeckillOrder(Long orderId) {
+        return seckillOrderMapper.deleteSeckillOrder(orderId) == 1;
+    }
+
 }
