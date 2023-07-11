@@ -21,7 +21,7 @@ public class SeckillPlaceOrderDBService extends SeckillPlaceOrderBaseService imp
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Long placeOrder(Long userId, SeckillOrderCommand seckillOrderCommand, Long txNo) {
+    public Long placeOrder(Long userId, SeckillOrderCommand seckillOrderCommand) {
         SeckillOrder seckillOrder = null;
         try {
             // 获取商品信息(带缓存)
@@ -29,13 +29,11 @@ public class SeckillPlaceOrderDBService extends SeckillPlaceOrderBaseService imp
             // 检测商品信息
             checkSeckillGoods(seckillOrderCommand, seckillGoods);
             // 扣减库存不成功，则库存不足
-            if (!seckillGoodsDubboService.updateAvailableStock(seckillOrderCommand.getQuantity(), seckillOrderCommand.getGoodsId(), txNo)) {
+            if (!seckillGoodsDubboService.updateAvailableStock(seckillOrderCommand.getQuantity(), seckillOrderCommand.getGoodsId())) {
                 throw new SeckillException(ErrorCode.STOCK_LT_ZERO);
             }
             // 构建订单
             seckillOrder = buildSeckillOrder(userId, seckillOrderCommand, seckillGoods);
-            // 巧妙的使用事务编号作为订单id，避免过多资源浪费，也可以使用其他方式生成订单id
-            seckillOrder.setId(txNo);
             // 保存订单
             seckillOrderDomainService.saveSeckillOrder(seckillOrder);
         } catch (Exception e) {

@@ -2,9 +2,9 @@ package cn.zjh.seckill.order.application.service.impl;
 
 import cn.zjh.seckill.common.exception.ErrorCode;
 import cn.zjh.seckill.common.exception.SeckillException;
-import cn.zjh.seckill.common.utils.id.SnowFlakeFactory;
 import cn.zjh.seckill.order.application.command.SeckillOrderCommand;
 import cn.zjh.seckill.order.application.place.SeckillPlaceOrderService;
+import cn.zjh.seckill.order.application.security.SecurityService;
 import cn.zjh.seckill.order.application.service.SeckillOrderService;
 import cn.zjh.seckill.order.domain.model.entity.SeckillOrder;
 import cn.zjh.seckill.order.domain.service.SeckillOrderDomainService;
@@ -16,24 +16,30 @@ import java.util.List;
 
 /**
  * 订单
- * 
+ *
  * @author zjh - kayson
  */
 @Service
 public class SeckillOrderServiceImpl implements SeckillOrderService {
-    
+
     @Resource
     private SeckillOrderDomainService seckillOrderDomainService;
     @Resource
     private SeckillPlaceOrderService seckillPlaceOrderService;
+    @Resource
+    private SecurityService securityService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Long saveSeckillOrder(Long userId, SeckillOrderCommand seckillOrderCommand) {
-        if (seckillOrderCommand == null) {  
+        if (seckillOrderCommand == null) {
             throw new SeckillException(ErrorCode.PARAMS_INVALID);
         }
-        return seckillPlaceOrderService.placeOrder(userId, seckillOrderCommand, SnowFlakeFactory.getSnowFlakeFromCache().nextId());
+        // 模拟风控
+        if (!securityService.securityPolicy(userId)) {
+            throw new SeckillException(ErrorCode.USER_INVALID);
+        }
+        return seckillPlaceOrderService.placeOrder(userId, seckillOrderCommand);
     }
 
     @Override
@@ -45,5 +51,5 @@ public class SeckillOrderServiceImpl implements SeckillOrderService {
     public List<SeckillOrder> getSeckillOrderByActivityId(Long activityId) {
         return seckillOrderDomainService.getSeckillOrderByActivityId(activityId);
     }
-    
+
 }

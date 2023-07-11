@@ -17,6 +17,6 @@ public interface SeckillGoodsDubboService {
     /**
      * 扣减商品库存
      */
-    boolean updateAvailableStock(Integer count, Long id, Long txNo);
+    boolean updateAvailableStock(Integer count, Long id);
 
 }
