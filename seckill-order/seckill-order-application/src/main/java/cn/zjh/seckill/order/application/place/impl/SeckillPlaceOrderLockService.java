@@ -1,16 +1,19 @@
 package cn.zjh.seckill.order.application.place.impl;
 
+import cn.zjh.seckill.common.cache.distributed.DistributedCacheService;
 import cn.zjh.seckill.common.constants.SeckillConstants;
 import cn.zjh.seckill.common.exception.ErrorCode;
 import cn.zjh.seckill.common.exception.SeckillException;
 import cn.zjh.seckill.common.lock.DistributedLock;
 import cn.zjh.seckill.common.lock.factory.DistributedLockFactory;
 import cn.zjh.seckill.common.model.dto.SeckillGoodsDTO;
+import cn.zjh.seckill.dubbo.interfaces.goods.SeckillGoodsDubboService;
 import cn.zjh.seckill.order.application.command.SeckillOrderCommand;
 import cn.zjh.seckill.order.application.place.SeckillPlaceOrderService;
 import cn.zjh.seckill.order.domain.model.entity.SeckillOrder;
+import cn.zjh.seckill.order.domain.service.SeckillOrderDomainService;
 import com.alibaba.fastjson.JSONObject;
-import org.dromara.hmily.annotation.HmilyTCC;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -27,28 +30,22 @@ import java.util.concurrent.TimeUnit;
  */
 @Service
 @ConditionalOnProperty(name = "place.order.type", havingValue = "lock")
-public class SeckillPlaceOrderLockService extends SeckillPlaceOrderBaseService implements SeckillPlaceOrderService {
+public class SeckillPlaceOrderLockService implements SeckillPlaceOrderService {
 
     public static final Logger logger = LoggerFactory.getLogger(SeckillPlaceOrderLockService.class);
 
+    @DubboReference(version = "1.0.0")
+    private SeckillGoodsDubboService seckillGoodsDubboService;
     @Resource
     private DistributedLockFactory distributedLockFactory;
+    @Resource
+    private DistributedCacheService distributedCacheService;
+    @Resource
+    private SeckillOrderDomainService seckillOrderDomainService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    @HmilyTCC(confirmMethod = "confirmMethod", cancelMethod = "cancelMethod")
-    public Long placeOrder(Long userId, SeckillOrderCommand seckillOrderCommand, Long txNo) {
-        // 幂等处理
-        if (distributedCacheService.isMemberSet(orderTryKey, txNo)) {
-            logger.warn("placeOrder|基于分布式锁防止超卖的方法已经执行过Try方法,txNo:{}", txNo);
-            return txNo;
-        }
-        // 空回滚和悬挂处理
-        if (distributedCacheService.isMemberSet(orderConfirmKey, txNo)
-                || distributedCacheService.isMemberSet(orderCancelKey, txNo)) {
-            logger.warn("placeOrder|基于分布式锁防止超卖的方法已经执行过Confirm方法或者Cancel方法,txNo:{}", txNo);
-            return txNo;
-        }
+    public Long placeOrder(Long userId, SeckillOrderCommand seckillOrderCommand) {
         // 获取商品信息(带缓存)
         SeckillGoodsDTO seckillGoods = seckillGoodsDubboService.getSeckillGoods(seckillOrderCommand.getGoodsId(), seckillOrderCommand.getVersion());
         // 检测商品信息
@@ -60,8 +57,6 @@ public class SeckillPlaceOrderLockService extends SeckillPlaceOrderBaseService i
         String stockKey = SeckillConstants.getKey(SeckillConstants.GOODS_ITEM_STOCK_KEY_PREFIX, String.valueOf(seckillOrderCommand.getGoodsId()));
         // 是否扣减了缓存中的库存
         boolean isDecrementCacheStock = false;
-        // 是否保存try日志
-        boolean isSaveTryLog = false;
         try {
             boolean isSuccessLock = lock.tryLock(2, 5, TimeUnit.SECONDS);
             // 未获取到分布式锁，稍后重试
@@ -83,15 +78,10 @@ public class SeckillPlaceOrderLockService extends SeckillPlaceOrderBaseService i
             isDecrementCacheStock = true;
             // 构建订单
             SeckillOrder seckillOrder = buildSeckillOrder(userId, seckillOrderCommand, seckillGoods);
-            // 巧妙的使用事务编号作为订单id，避免过多资源浪费，也可以使用其他方式生成订单id
-            seckillOrder.setId(txNo);
             // 保存订单
             seckillOrderDomainService.saveSeckillOrder(seckillOrder);
-            // 保存try日志
-            distributedCacheService.addSet(orderTryKey, txNo);
-            isSaveTryLog = true;
             // 扣减数据库库存
-            seckillGoodsDubboService.updateAvailableStock(seckillOrderCommand.getQuantity(), seckillOrderCommand.getGoodsId(), txNo);
+            seckillGoodsDubboService.updateAvailableStock(seckillOrderCommand.getQuantity(), seckillOrderCommand.getGoodsId());
             // 手动抛个异常，测试分布式事务问题
 //            int i = 1 / 0;
             // 返回订单id
@@ -100,9 +90,6 @@ public class SeckillPlaceOrderLockService extends SeckillPlaceOrderBaseService i
             // 已经扣减了缓存中的库存，则需要增加回来
             if (isDecrementCacheStock) {
                 distributedCacheService.increment(stockKey, seckillOrderCommand.getQuantity());
-            }
-            if (isSaveTryLog) {
-                distributedCacheService.removeSet(orderTryKey, txNo);
             }
             if (e instanceof InterruptedException) {
                 logger.error("SeckillPlaceOrderLockService|下单分布式锁被中断|参数:{}|异常信息:{}", JSONObject.toJSONString(seckillOrderCommand), e.getMessage());
