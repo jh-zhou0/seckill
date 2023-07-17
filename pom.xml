@@ -31,10 +31,10 @@
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <spring-boot.version>2.4.5</spring-boot.version>
+        <spring-boot.version>2.5.9</spring-boot.version>
         <spring-cloud-alibaba.version>2.2.2.RELEASE</spring-cloud-alibaba.version>
         <fastjson.version>1.2.72</fastjson.version>
-        <rocketmq.version>2.2.1</rocketmq.version>
+        <rocketmq.version>2.2.3</rocketmq.version>
         <guava.version>30.1-jre</guava.version>
         <commons-lang3.version>3.3.2</commons-lang3.version>
         <joda-time.version>2.6</joda-time.version>
@@ -72,6 +72,20 @@
             <groupId>org.apache.rocketmq</groupId>
             <artifactId>rocketmq-spring-boot-starter</artifactId>
             <version>${rocketmq.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-webmvc</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <!-- fastjson -->

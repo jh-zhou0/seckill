@@ -19,4 +19,9 @@ public interface SeckillGoodsDubboService {
      */
     boolean updateAvailableStock(Integer count, Long id);
 
+    /**
+     * 获取商品库存
+     */
+    Integer getAvailableStockById(Long goodsId);
+
 }

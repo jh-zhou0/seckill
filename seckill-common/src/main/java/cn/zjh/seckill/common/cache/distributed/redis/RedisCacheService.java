@@ -31,6 +31,7 @@ public class RedisCacheService implements DistributedCacheService {
     private static final DefaultRedisScript<Long> DECREASE_STOCK_SCRIPT;
     private static final DefaultRedisScript<Long> INCREASE_STOCK_SCRIPT;
     private static final DefaultRedisScript<Long> INIT_STOCK_SCRIPT;
+    private static final DefaultRedisScript<Long> CHECK_RECOVER_STOCK;
 
     static {
         // 扣减库存
@@ -47,6 +48,11 @@ public class RedisCacheService implements DistributedCacheService {
         INIT_STOCK_SCRIPT = new DefaultRedisScript<>();
         INIT_STOCK_SCRIPT.setLocation(new ClassPathResource("lua/init_goods_stock.lua"));
         INIT_STOCK_SCRIPT.setResultType(Long.class);
+
+        // 检测是否执行过恢复缓存库存的操作
+        CHECK_RECOVER_STOCK = new DefaultRedisScript<>();
+        CHECK_RECOVER_STOCK.setLocation(new ClassPathResource("lua/check_recover_stock.lua"));
+        CHECK_RECOVER_STOCK.setResultType(Long.class);
     }
 
     @Override
@@ -166,6 +172,11 @@ public class RedisCacheService implements DistributedCacheService {
     @Override
     public Long initByLua(String key, Integer quantity) {
         return redisTemplate.execute(INIT_STOCK_SCRIPT, Collections.singletonList(key), quantity);
+    }
+
+    @Override
+    public Long checkRecoverStockByLua(String key, Long seconds) {
+        return redisTemplate.execute(CHECK_RECOVER_STOCK, Collections.singletonList(key), seconds);
     }
 
 }

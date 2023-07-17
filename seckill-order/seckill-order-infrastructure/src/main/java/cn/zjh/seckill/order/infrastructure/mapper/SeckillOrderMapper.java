@@ -31,5 +31,10 @@ public interface SeckillOrderMapper {
      * 删除订单，下单时异常由TCC分布式事务调用
      */
     int deleteSeckillOrder(@Param("orderId") Long orderId);
+
+    /**
+     * 删除订单数据
+     */
+    void deleteOrder(@Param("orderId") Long orderId);
     
 }

@@ -1,5 +1,6 @@
 package cn.zjh.seckill.order.application.service;
 
+import cn.zjh.seckill.common.model.message.ErrorMessage;
 import cn.zjh.seckill.order.application.command.SeckillOrderCommand;
 import cn.zjh.seckill.order.domain.model.entity.SeckillOrder;
 
@@ -27,4 +28,9 @@ public interface SeckillOrderService {
      */
     List<SeckillOrder> getSeckillOrderByActivityId(Long activityId);
 
+    /**
+     * 删除订单
+     */
+    void deleteOrder(ErrorMessage errorMessage);
+    
 }

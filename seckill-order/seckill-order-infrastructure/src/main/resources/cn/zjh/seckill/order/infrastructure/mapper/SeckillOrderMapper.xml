@@ -36,4 +36,8 @@
         delete from seckill_order where id = #{orderId}
     </delete>
     
+    <delete id="deleteOrder">
+        delete from seckill_order where id = #{orderId}
+    </delete>
+
 </mapper>

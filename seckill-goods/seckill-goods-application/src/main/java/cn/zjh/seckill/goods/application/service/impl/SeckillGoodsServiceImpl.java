@@ -9,6 +9,8 @@ import cn.zjh.seckill.common.exception.SeckillException;
 import cn.zjh.seckill.common.model.dto.SeckillActivityDTO;
 import cn.zjh.seckill.common.model.dto.SeckillGoodsDTO;
 import cn.zjh.seckill.common.model.enums.SeckillGoodsStatus;
+import cn.zjh.seckill.common.model.message.ErrorMessage;
+import cn.zjh.seckill.common.model.message.TxMessage;
 import cn.zjh.seckill.common.utils.id.SnowFlakeFactory;
 import cn.zjh.seckill.dubbo.interfaces.activity.SeckillActivityDubboService;
 import cn.zjh.seckill.goods.application.builder.SeckillGoodsBuilder;
@@ -18,13 +20,20 @@ import cn.zjh.seckill.goods.application.command.SeckillGoodsCommand;
 import cn.zjh.seckill.goods.application.service.SeckillGoodsService;
 import cn.zjh.seckill.goods.domain.model.entity.SeckillGoods;
 import cn.zjh.seckill.goods.domain.service.SeckillGoodsDomainService;
+import com.alibaba.fastjson.JSONObject;
 import org.apache.dubbo.config.annotation.DubboReference;
+import org.apache.rocketmq.spring.core.RocketMQTemplate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -34,6 +43,8 @@ import java.util.stream.Collectors;
  */
 @Service
 public class SeckillGoodsServiceImpl implements SeckillGoodsService {
+    
+    public static final Logger logger = LoggerFactory.getLogger(SeckillGoodsServiceImpl.class);
     
     @Resource
     private SeckillGoodsDomainService seckillGoodsDomainService;
@@ -47,6 +58,8 @@ public class SeckillGoodsServiceImpl implements SeckillGoodsService {
     private DistributedCacheService distributedCacheService;
     @Resource
     private LocalCacheService<String, SeckillGoods> localCacheService;
+    @Resource
+    private RocketMQTemplate rocketMQTemplate;
     
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -162,4 +175,40 @@ public class SeckillGoodsServiceImpl implements SeckillGoodsService {
         return seckillGoodsDTO;
     }
 
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void updateAvailableStock(TxMessage txMessage) {
+        String goodsTxKey = SeckillConstants.getKey(SeckillConstants.GOODS_TX_KEY, String.valueOf(txMessage.getTxNo()));
+        Boolean decrementStock = distributedCacheService.hasKey(goodsTxKey);
+        if (Boolean.TRUE.equals(decrementStock)) {
+            logger.info("updateAvailableStock|秒杀商品微服务已经扣减过库存|{}", txMessage.getTxNo());
+        }
+        boolean isUpdate;
+        try {
+            isUpdate = seckillGoodsDomainService.updateAvailableStock(txMessage.getQuantity(), txMessage.getGoodsId());
+            // 成功扣减库存成功
+            if (isUpdate) {
+                // 记录事务日志
+                distributedCacheService.put(goodsTxKey, String.valueOf(txMessage.getTxNo()), SeckillConstants.TX_LOG_EXPIRE_DAY, TimeUnit.DAYS);
+            } else {
+                // 发送失败消息给订单微服务
+                rocketMQTemplate.send(SeckillConstants.TOPIC_ERROR_MSG, getErrorMessage(txMessage));
+            }
+        } catch (Exception e) {
+            // 发送失败消息给订单微服务
+            rocketMQTemplate.send(SeckillConstants.TOPIC_ERROR_MSG, getErrorMessage(txMessage));
+        }
+    }
+    
+    /**
+     * 构建订单微服务的错误消息
+     */
+    private Message<String> getErrorMessage(TxMessage txMessage){
+        ErrorMessage errorMessage = new ErrorMessage(txMessage.getTxNo(), txMessage.getGoodsId(), 
+                txMessage.getQuantity(), txMessage.getPlaceOrderType(), txMessage.getException());
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put(SeckillConstants.ERROR_MSG_KEY, errorMessage);
+        return MessageBuilder.withPayload(jsonObject.toJSONString()).build();
+    }
+    
 }

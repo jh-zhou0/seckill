@@ -1,6 +1,7 @@
 package cn.zjh.seckill.goods.application.service;
 
 import cn.zjh.seckill.common.model.dto.SeckillGoodsDTO;
+import cn.zjh.seckill.common.model.message.TxMessage;
 import cn.zjh.seckill.goods.application.command.SeckillGoodsCommand;
 import cn.zjh.seckill.goods.domain.model.entity.SeckillGoods;
 
@@ -58,4 +59,9 @@ public interface SeckillGoodsService {
      */
     SeckillGoodsDTO getSeckillGoods(Long id, Long version);
 
+    /**
+     * 扣减库存
+     */
+    void updateAvailableStock(TxMessage txMessage);
+    
 }

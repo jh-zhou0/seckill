@@ -44,4 +44,8 @@ public class SeckillOrderRepositoryImpl implements SeckillOrderRepository {
         return seckillOrderMapper.deleteSeckillOrder(orderId) == 1;
     }
 
+    @Override
+    public void deleteOrder(Long orderId) {
+        seckillOrderMapper.deleteOrder(orderId);
+    }
 }

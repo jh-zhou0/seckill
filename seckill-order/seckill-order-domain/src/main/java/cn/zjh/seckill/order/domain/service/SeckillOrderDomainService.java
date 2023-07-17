@@ -30,5 +30,10 @@ public interface SeckillOrderDomainService {
      * 删除订单，下单时异常由TCC分布式事务调用
      */
     void deleteSeckillOrder(Long orderId);
+
+    /**
+     * 删除订单
+     */
+    void deleteOrder(Long orderId);
     
 }

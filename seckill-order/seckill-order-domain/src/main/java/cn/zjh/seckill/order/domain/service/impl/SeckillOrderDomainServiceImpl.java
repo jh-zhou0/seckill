@@ -74,4 +74,10 @@ public class SeckillOrderDomainServiceImpl implements SeckillOrderDomainService 
         }
     }
 
+    @Override
+    public void deleteOrder(Long orderId) {
+        seckillOrderRepository.deleteOrder(orderId);
+    }
+
+
 }

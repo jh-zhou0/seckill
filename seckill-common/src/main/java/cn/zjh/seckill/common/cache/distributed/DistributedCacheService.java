@@ -69,4 +69,11 @@ public interface DistributedCacheService {
         return null;
     }
 
+    /**
+     * 检测是否已经恢复缓存的库存数据
+     */
+    default Long checkRecoverStockByLua(String key, Long seconds){
+        return null;
+    }
+
 }
