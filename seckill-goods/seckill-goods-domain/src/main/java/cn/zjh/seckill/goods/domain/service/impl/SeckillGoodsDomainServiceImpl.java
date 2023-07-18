@@ -1,5 +1,6 @@
 package cn.zjh.seckill.goods.domain.service.impl;
 
+import cn.zjh.seckill.common.constants.SeckillConstants;
 import cn.zjh.seckill.common.event.publisher.EventPublisher;
 import cn.zjh.seckill.common.exception.ErrorCode;
 import cn.zjh.seckill.common.exception.SeckillException;
@@ -11,6 +12,7 @@ import cn.zjh.seckill.goods.domain.service.SeckillGoodsDomainService;
 import com.alibaba.fastjson.JSON;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -30,6 +32,8 @@ public class SeckillGoodsDomainServiceImpl implements SeckillGoodsDomainService 
     private SeckillGoodsRepository seckillGoodsRepository;
     @Resource
     private EventPublisher eventPublisher;
+    @Value("${event.publish.type}")
+    private String eventType;
     
     @Override
     public void saveSeckillGoods(SeckillGoods seckillGoods) {
@@ -41,7 +45,7 @@ public class SeckillGoodsDomainServiceImpl implements SeckillGoodsDomainService 
         seckillGoodsRepository.saveSeckillGoods(seckillGoods);
         logger.info("SeckillGoodsPublish|秒杀商品已发布|{}", seckillGoods.getId());
 
-        SeckillGoodsEvent seckillGoodsEvent = new SeckillGoodsEvent(seckillGoods.getId(), seckillGoods.getActivityId(), seckillGoods.getStatus());
+        SeckillGoodsEvent seckillGoodsEvent = new SeckillGoodsEvent(seckillGoods.getId(), seckillGoods.getActivityId(), seckillGoods.getStatus(), getTopicEvent());
         eventPublisher.publish(seckillGoodsEvent);
         logger.info("SeckillGoodsPublish|秒杀商品事件已发布|{}", seckillGoods.getId());
     }
@@ -70,7 +74,7 @@ public class SeckillGoodsDomainServiceImpl implements SeckillGoodsDomainService 
         seckillGoodsRepository.updateStatus(status, id);
         logger.info("SeckillGoodsPublish|发布秒杀商品状态事件|{},{}", status, id);
         
-        SeckillGoodsEvent seckillGoodsEvent = new SeckillGoodsEvent(id, seckillGoods.getActivityId(), status);
+        SeckillGoodsEvent seckillGoodsEvent = new SeckillGoodsEvent(id, seckillGoods.getActivityId(), status, getTopicEvent());
         eventPublisher.publish(seckillGoodsEvent);
         logger.info("SeckillGoodsPublish|秒杀商品事件已发布|{}", id);
     }
@@ -89,7 +93,7 @@ public class SeckillGoodsDomainServiceImpl implements SeckillGoodsDomainService 
         boolean isUpdate = seckillGoodsRepository.updateAvailableStock(count, id) > 0;
         if (isUpdate) {
             logger.info("SeckillGoodsPublish|秒杀商品库存已更新|{}", id);
-            SeckillGoodsEvent seckillGoodsEvent = new SeckillGoodsEvent(id, seckillGoods.getActivityId(), seckillGoods.getStatus());
+            SeckillGoodsEvent seckillGoodsEvent = new SeckillGoodsEvent(id, seckillGoods.getActivityId(), seckillGoods.getStatus(), getTopicEvent());
             eventPublisher.publish(seckillGoodsEvent);
             logger.info("SeckillGoodsPublish|秒杀商品库存事件已发布|{}", id);
         } else {
@@ -112,7 +116,7 @@ public class SeckillGoodsDomainServiceImpl implements SeckillGoodsDomainService 
         boolean isUpdate = seckillGoodsRepository.incrementAvailableStock(count, id) > 0;
         if (isUpdate) {
             logger.info("SeckillGoodsPublish|秒杀商品库存已更新|{}", id);
-            SeckillGoodsEvent seckillGoodsEvent = new SeckillGoodsEvent(id, seckillGoods.getActivityId(), seckillGoods.getStatus());
+            SeckillGoodsEvent seckillGoodsEvent = new SeckillGoodsEvent(id, seckillGoods.getActivityId(), seckillGoods.getStatus(), getTopicEvent());
             eventPublisher.publish(seckillGoodsEvent);
             logger.info("SeckillGoodsPublish|秒杀商品库存事件已发布|{}", id);
         } else {
@@ -124,6 +128,13 @@ public class SeckillGoodsDomainServiceImpl implements SeckillGoodsDomainService 
     @Override
     public Integer getAvailableStockById(Long id) {
         return seckillGoodsRepository.getAvailableStockById(id);
+    }
+
+    /**
+     * 获取主题事件
+     */
+    private String getTopicEvent(){
+        return SeckillConstants.EVENT_PUBLISH_TYPE_ROCKETMQ.equals(eventType) ? SeckillConstants.TOPIC_EVENT_ROCKETMQ_GOODS : SeckillConstants.TOPIC_EVENT_COLA;
     }
     
 }

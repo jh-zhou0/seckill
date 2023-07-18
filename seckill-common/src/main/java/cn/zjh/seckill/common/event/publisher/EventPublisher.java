@@ -1,6 +1,6 @@
 package cn.zjh.seckill.common.event.publisher;
 
-import com.alibaba.cola.event.DomainEventI;
+import cn.zjh.seckill.common.event.SeckillBaseEvent;
 
 /**
  * 事件发布器
@@ -12,6 +12,6 @@ public interface EventPublisher {
     /**
      * 发布事件
      */
-    void publish(DomainEventI domainEvent);
+    void publish(SeckillBaseEvent domainEvent);
 
 }

@@ -7,16 +7,18 @@ import com.alibaba.cola.event.EventHandlerI;
 import com.alibaba.fastjson.JSON;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 
 /**
- * 接收订单事件
+ * 接收订单事件 - 基于Cola
  * 
  * @author zjh - kayson
  */
 @EventHandler
-public class SeckillOrderEventHandler implements EventHandlerI<Response, SeckillOrderEvent> {
+@ConditionalOnProperty(name = "event.publish.type", havingValue = "cola")
+public class SeckillOrderColaEventHandler implements EventHandlerI<Response, SeckillOrderEvent> {
     
-    public static final Logger logger = LoggerFactory.getLogger(SeckillOrderEventHandler.class);
+    public static final Logger logger = LoggerFactory.getLogger(SeckillOrderColaEventHandler.class);
     
     @Override
     public Response execute(SeckillOrderEvent seckillOrderEvent) {
