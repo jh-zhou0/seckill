@@ -40,8 +40,8 @@ public class SeckillActivityRocketMQEventHandler implements RocketMQListener<Str
             return;
         }
         SeckillActivityEvent seckillActivityEvent = getEventMessage(message);
-        seckillActivityCacheService.tryUpdateSeckillActivityCacheByLock(seckillActivityEvent.getId());
-        seckillActivityListCacheService.tryUpdateSeckillActivityCacheByLock(seckillActivityEvent.getStatus());
+        seckillActivityCacheService.tryUpdateSeckillActivityCacheByLock(seckillActivityEvent.getId(), false);
+        seckillActivityListCacheService.tryUpdateSeckillActivityCacheByLock(seckillActivityEvent.getStatus(), false);
     }
 
     private SeckillActivityEvent getEventMessage(String message) {

@@ -74,11 +74,12 @@ public class SeckillGoodsCacheServiceImpl implements SeckillGoodsCacheService {
      */
     private SeckillBusinessCache<SeckillGoods> getDistributedCache(Long goodsId) {
         logger.info("SeckillGoodsCache|读取分布式缓存|{}", goodsId);
-        SeckillBusinessCache<SeckillGoods> seckillGoodsCache = SeckillGoodsBuilder.getSeckillBusinessCache(distributedCacheService.getObject(buildCacheKey(goodsId)), SeckillGoods.class);
+        SeckillBusinessCache<SeckillGoods> seckillGoodsCache = SeckillGoodsBuilder.getSeckillBusinessCache(
+                distributedCacheService.getObject(buildCacheKey(goodsId)), SeckillGoods.class);
         // 分布式缓存中没有数据
         if (seckillGoodsCache == null) {
             // 尝试更新分布式缓存中的数据，注意的是只用一个线程去更新分布式缓存中的数据
-            seckillGoodsCache = tryUpdateSeckillActivityCacheByLock(goodsId);
+            seckillGoodsCache = tryUpdateSeckillGoodsCacheByLock(goodsId, true);
         }
         // 获取的数据不为空，并且不需要重试
         if (seckillGoodsCache != null && !seckillGoodsCache.isRetryLater()) {
@@ -96,7 +97,7 @@ public class SeckillGoodsCacheServiceImpl implements SeckillGoodsCacheService {
     }
 
     @Override
-    public SeckillBusinessCache<SeckillGoods> tryUpdateSeckillActivityCacheByLock(Long goodsId) {
+    public SeckillBusinessCache<SeckillGoods> tryUpdateSeckillGoodsCacheByLock(Long goodsId, boolean doubleCheck) {
         logger.info("SeckillGoodsCache|更新分布式缓存|{}", goodsId);
         // 获取分布式锁
         DistributedLock lock = distributedLockFactory.getDistributedLock(SECKILL_GOODS_UPDATE_CACHE_LOCK_KEY.concat(String.valueOf(goodsId)));
@@ -107,8 +108,16 @@ public class SeckillGoodsCacheServiceImpl implements SeckillGoodsCacheService {
                 return new SeckillBusinessCache<SeckillGoods>().retryLater();
             }
             // 2.获取分布式锁成功，从数据库获取数据
-            SeckillGoods seckillGoods = seckillGoodsService.getSeckillGoodsById(goodsId);
             SeckillBusinessCache<SeckillGoods> seckillGoodsCache;
+            if (doubleCheck) {
+                // 获取锁成功后，再次从缓存中获取数据，防止高并发下多个线程争抢锁的过程中，后续的线程再等待2秒的过程中，
+                // 前面的线程释放了锁，后续的线程获取锁成功后再次更新分布式缓存数据。
+                seckillGoodsCache = SeckillGoodsBuilder.getSeckillBusinessCache(distributedCacheService.getObject(buildCacheKey(goodsId)), SeckillGoods.class);
+                if (seckillGoodsCache != null) {
+                    return seckillGoodsCache;
+                }
+            }
+            SeckillGoods seckillGoods = seckillGoodsService.getSeckillGoodsById(goodsId);
             if (seckillGoods == null) {
                 seckillGoodsCache = new SeckillBusinessCache<SeckillGoods>().notExist();
             } else {

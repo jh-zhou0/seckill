@@ -77,7 +77,7 @@ public class SeckillActivityListCacheServiceImpl implements SeckillActivityListC
                 .getSeckillBusinessCacheList(distributedCacheService.getObject(buildCacheKey(status)), SeckillActivity.class);
         // 分布式缓存为空
         if (seckillActivityListCache == null) {
-            seckillActivityListCache = tryUpdateSeckillActivityCacheByLock(status);
+            seckillActivityListCache = tryUpdateSeckillActivityCacheByLock(status, true);
         }
         // 分布式缓存不为空，且无需重试
         if (seckillActivityListCache != null && !seckillActivityListCache.isRetryLater()) {
@@ -96,7 +96,7 @@ public class SeckillActivityListCacheServiceImpl implements SeckillActivityListC
     }
 
     @Override
-    public SeckillBusinessCache<List<SeckillActivity>> tryUpdateSeckillActivityCacheByLock(Integer status) {
+    public SeckillBusinessCache<List<SeckillActivity>> tryUpdateSeckillActivityCacheByLock(Integer status, boolean doubleCheck) {
         logger.info("SeckillActivitiesCache|更新分布式缓存|{}", status);
         // 注意，分布式锁的key与Cache的key不同
         DistributedLock lock = distributedLockFactory.getDistributedLock(SECKILL_ACTIVITIES_UPDATE_CACHE_LOCK_KEY.concat(String.valueOf(status)));
@@ -107,9 +107,17 @@ public class SeckillActivityListCacheServiceImpl implements SeckillActivityListC
                 return new SeckillBusinessCache<List<SeckillActivity>>().retryLater();
             }
             // 2.获取分布式锁成功
+            SeckillBusinessCache<List<SeckillActivity>> seckillActivityListCache;
+            if (doubleCheck) {
+                // 获取锁成功后，再次从缓存中获取数据，防止高并发下多个线程争抢锁的过程中，后续的线程再等待1秒的过程中，
+                // 前面的线程释放了锁，后续的线程获取锁成功后再次更新分布式缓存数据。
+                seckillActivityListCache = SeckillActivityBuilder.getSeckillBusinessCacheList(distributedCacheService.getObject(buildCacheKey(status)), SeckillActivity.class);
+                if (seckillActivityListCache != null) {
+                    return seckillActivityListCache;
+                }
+            }
             // 从数据库获取数据
             List<SeckillActivity> seckillActivityList = seckillActivityRepository.getSeckillActivityList(status);
-            SeckillBusinessCache<List<SeckillActivity>> seckillActivityListCache;
             if (CollectionUtils.isEmpty(seckillActivityList)) { // 数据库没有数据，返回不存在
                 seckillActivityListCache = new SeckillBusinessCache<List<SeckillActivity>>().notExist();
             } else {

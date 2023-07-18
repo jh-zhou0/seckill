@@ -75,10 +75,11 @@ public class SeckillGoodsListCacheServiceImpl implements SeckillGoodsListCacheSe
      */
     private SeckillBusinessCache<List<SeckillGoods>> getDistributedCache(Long activityId) {
         logger.info("SeckillGoodsListCache|读取分布式缓存|{}", activityId);
-        SeckillBusinessCache<List<SeckillGoods>> seckillGoodsListCache = SeckillGoodsBuilder.getSeckillBusinessCacheList(distributedCacheService.getObject(buildCacheKey(activityId)), SeckillGoods.class);
+        SeckillBusinessCache<List<SeckillGoods>> seckillGoodsListCache = SeckillGoodsBuilder.getSeckillBusinessCacheList(
+                distributedCacheService.getObject(buildCacheKey(activityId)), SeckillGoods.class);
         // 分布式缓存为空
         if (seckillGoodsListCache == null) {
-            seckillGoodsListCache =  tryUpdateSeckillActivityCacheByLock(activityId);
+            seckillGoodsListCache =  tryUpdateSeckillGoodsCacheByLock(activityId, true);
         }
         // 分布式缓存不为空，且无需重试
         if (seckillGoodsListCache != null && !seckillGoodsListCache.isRetryLater()) {
@@ -97,7 +98,7 @@ public class SeckillGoodsListCacheServiceImpl implements SeckillGoodsListCacheSe
     }
 
     @Override
-    public SeckillBusinessCache<List<SeckillGoods>> tryUpdateSeckillActivityCacheByLock(Long activityId) {
+    public SeckillBusinessCache<List<SeckillGoods>> tryUpdateSeckillGoodsCacheByLock(Long activityId, boolean doubleCheck) {
         logger.info("SeckillGoodsListCache|更新分布式缓存|{}", activityId);
         // 获取分布式锁
         DistributedLock lock = distributedLockFactory.getDistributedLock(SECKILL_GOODS_LIST_UPDATE_CACHE_LOCK_KEY.concat(String.valueOf(activityId)));
@@ -108,8 +109,17 @@ public class SeckillGoodsListCacheServiceImpl implements SeckillGoodsListCacheSe
                 return new SeckillBusinessCache<List<SeckillGoods>>().retryLater();
             }
             // 2.获取分布式锁成功，从数据库获取数据
-            List<SeckillGoods> seckillGoodsList = seckillGoodsService.getSeckillGoodsByActivityId(activityId);
             SeckillBusinessCache<List<SeckillGoods>> seckillGoodsListCache;
+            if (doubleCheck) {
+                // 获取锁成功后，再次从缓存中获取数据，防止高并发下多个线程争抢锁的过程中，后续的线程再等待2秒的过程中，
+                // 前面的线程释放了锁，后续的线程获取锁成功后再次更新分布式缓存数据。
+                seckillGoodsListCache = SeckillGoodsBuilder.getSeckillBusinessCacheList(
+                        distributedCacheService.getObject(buildCacheKey(activityId)), SeckillGoods.class);
+                if (seckillGoodsListCache != null) {
+                    return seckillGoodsListCache;
+                }
+            }
+            List<SeckillGoods> seckillGoodsList = seckillGoodsService.getSeckillGoodsByActivityId(activityId);
             if (CollectionUtils.isEmpty(seckillGoodsList)) {
                 seckillGoodsListCache = new SeckillBusinessCache<List<SeckillGoods>>().notExist();
             } else {
