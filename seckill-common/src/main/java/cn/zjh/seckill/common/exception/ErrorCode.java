@@ -27,7 +27,12 @@ public enum ErrorCode {
     USER_INVALID(2017, "当前账户异常，不能参与秒杀"),
     GOODS_PUBLISH(2018, "商品未上线"),
     ORDER_FAILED(2019, "下单失败"),
-    STOCK_IS_NULL(2020, "商品库存不存在");
+    BEYOND_TIME(2020, "超出活动时间"),
+    GOODS_FINISH(2021, "商品已售罄"),
+    REDUNDANT_SUBMIT(2022, "请勿重复下单"),
+    ORDER_TOKENS_NOT_AVAILABLE(2023, "暂无可用库存"),
+    ORDER_TASK_ID_INVALID(2024, "下单任务编号错误"),
+    STOCK_IS_NULL(2025, "商品库存不存在");
 
     private final Integer code;
     private final String message;

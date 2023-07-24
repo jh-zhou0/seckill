@@ -11,7 +11,7 @@ import cn.zjh.seckill.common.model.message.TxMessage;
 import cn.zjh.seckill.common.utils.id.SnowFlakeFactory;
 import cn.zjh.seckill.dubbo.interfaces.goods.SeckillGoodsDubboService;
 import cn.zjh.seckill.mq.MessageSenderService;
-import cn.zjh.seckill.order.application.command.SeckillOrderCommand;
+import cn.zjh.seckill.order.application.model.command.SeckillOrderCommand;
 import cn.zjh.seckill.order.application.place.SeckillPlaceOrderService;
 import cn.zjh.seckill.order.domain.model.entity.SeckillOrder;
 import cn.zjh.seckill.order.domain.service.SeckillOrderDomainService;
@@ -128,7 +128,7 @@ public class SeckillPlaceOrderLockService implements SeckillPlaceOrderService {
         if (Boolean.FALSE.equals(txMessage.getException())) {
             String luaKey = SeckillConstants.getKey(SeckillConstants.ORDER_TX_KEY, String.valueOf(txMessage.getTxNo())).concat(SeckillConstants.LUA_SUFFIX);
             // 已经执行过恢复缓存库存的方法
-            Long result = distributedCacheService.checkRecoverStockByLua(luaKey, SeckillConstants.TX_LOG_EXPIRE_SECONDS);
+            Long result = distributedCacheService.checkExecute(luaKey, SeckillConstants.TX_LOG_EXPIRE_SECONDS);
             if (SeckillConstants.CHECK_RECOVER_STOCK_HAS_EXECUTE.equals(result)) {
                 logger.info("handlerCacheStock|已经执行过恢复缓存库存的方法|{}", JSONObject.toJSONString(txMessage));
                 return;

@@ -1,4 +1,4 @@
-package cn.zjh.seckill.order.application.command;
+package cn.zjh.seckill.order.application.model.command;
 
 import java.io.Serializable;
 

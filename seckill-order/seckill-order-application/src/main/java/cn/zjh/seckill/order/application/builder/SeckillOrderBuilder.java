@@ -2,7 +2,7 @@ package cn.zjh.seckill.order.application.builder;
 
 import cn.zjh.seckill.common.builder.SeckillCommonBuilder;
 import cn.zjh.seckill.common.utils.beans.BeanUtil;
-import cn.zjh.seckill.order.application.command.SeckillOrderCommand;
+import cn.zjh.seckill.order.application.model.command.SeckillOrderCommand;
 import cn.zjh.seckill.order.domain.model.entity.SeckillOrder;
 
 /**

@@ -9,7 +9,7 @@ import cn.zjh.seckill.common.model.message.TxMessage;
 import cn.zjh.seckill.common.utils.id.SnowFlakeFactory;
 import cn.zjh.seckill.dubbo.interfaces.goods.SeckillGoodsDubboService;
 import cn.zjh.seckill.mq.MessageSenderService;
-import cn.zjh.seckill.order.application.command.SeckillOrderCommand;
+import cn.zjh.seckill.order.application.model.command.SeckillOrderCommand;
 import cn.zjh.seckill.order.application.place.SeckillPlaceOrderService;
 import cn.zjh.seckill.order.domain.model.entity.SeckillOrder;
 import cn.zjh.seckill.order.domain.service.SeckillOrderDomainService;

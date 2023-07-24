@@ -113,6 +113,11 @@ public class SeckillConstants {
     public static final String MSG_KEY = "message";
 
     /**
+     * 提交订单分组
+     */
+    public static final String SUBMIT_ORDER_CONSUMER_GROUP = "submit_order_consumer_group";
+
+    /**
      * 订单事务分组
      */
     public static final String TX_ORDER_PRODUCER_GROUP = "tx_order_producer_group";

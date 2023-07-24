@@ -8,7 +8,7 @@ import cn.zjh.seckill.common.model.enums.SeckillOrderStatus;
 import cn.zjh.seckill.common.model.message.TxMessage;
 import cn.zjh.seckill.common.utils.beans.BeanUtil;
 import cn.zjh.seckill.common.utils.id.SnowFlakeFactory;
-import cn.zjh.seckill.order.application.command.SeckillOrderCommand;
+import cn.zjh.seckill.order.application.model.command.SeckillOrderCommand;
 import cn.zjh.seckill.order.domain.model.entity.SeckillOrder;
 
 import java.math.BigDecimal;

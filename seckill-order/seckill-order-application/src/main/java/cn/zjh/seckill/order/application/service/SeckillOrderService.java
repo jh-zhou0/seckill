@@ -1,7 +1,7 @@
 package cn.zjh.seckill.order.application.service;
 
+import cn.zjh.seckill.common.model.dto.SeckillOrderSubmitDTO;
 import cn.zjh.seckill.common.model.message.ErrorMessage;
-import cn.zjh.seckill.order.application.command.SeckillOrderCommand;
 import cn.zjh.seckill.order.domain.model.entity.SeckillOrder;
 
 import java.util.List;
@@ -12,11 +12,6 @@ import java.util.List;
  * @author zjh - kayson
  */
 public interface SeckillOrderService {
-
-    /**
-     * 保存订单
-     */
-    Long saveSeckillOrder(Long userId, SeckillOrderCommand seckillOrderCommand);
 
     /**
      * 根据用户id获取订单列表
@@ -32,5 +27,10 @@ public interface SeckillOrderService {
      * 删除订单
      */
     void deleteOrder(ErrorMessage errorMessage);
+
+    /**
+     * 根据任务id获取订单号
+     */
+    SeckillOrderSubmitDTO getSeckillOrderSubmitDTOByTaskId(String taskId, Long userId, Long goodsId);
     
 }
