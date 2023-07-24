@@ -1,22 +1,21 @@
-package cn.zjh.seckill.common.event;
+package cn.zjh.seckill.common.model.event;
 
-import com.alibaba.cola.event.DomainEventI;
+import cn.zjh.seckill.common.model.message.TopicMessage;
 
 /**
  * 事件基础模型
  * 
  * @author zjh - kayson
  */
-public class SeckillBaseEvent implements DomainEventI {
+public class SeckillBaseEvent extends TopicMessage {
 
     private Long id;
     private Integer status;
-    private String topicEvent;
     
     public SeckillBaseEvent(Long id, Integer status, String topicEvent) {
+        super(topicEvent);
         this.id = id;
         this.status = status;
-        this.topicEvent = topicEvent;
     }
 
     public Long getId() {
@@ -33,13 +32,5 @@ public class SeckillBaseEvent implements DomainEventI {
 
     public void setStatus(Integer status) {
         this.status = status;
-    }
-
-    public String getTopicEvent() {
-        return topicEvent;
-    }
-
-    public void setTopicEvent(String topicEvent) {
-        this.topicEvent = topicEvent;
     }
 }

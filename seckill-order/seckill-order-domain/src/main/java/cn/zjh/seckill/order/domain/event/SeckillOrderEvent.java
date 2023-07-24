@@ -1,6 +1,6 @@
 package cn.zjh.seckill.order.domain.event;
 
-import cn.zjh.seckill.common.event.SeckillBaseEvent;
+import cn.zjh.seckill.common.model.event.SeckillBaseEvent;
 
 /**
  * 秒杀订单事件模型

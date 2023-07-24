@@ -15,7 +15,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
  * @author zjh - kayson
  */
 @EventHandler
-@ConditionalOnProperty(name = "event.publish.type", havingValue = "cola")
+@ConditionalOnProperty(name = "message.mq.type", havingValue = "cola")
 public class SeckillOrderColaEventHandler implements EventHandlerI<Response, SeckillOrderEvent> {
     
     public static final Logger logger = LoggerFactory.getLogger(SeckillOrderColaEventHandler.class);

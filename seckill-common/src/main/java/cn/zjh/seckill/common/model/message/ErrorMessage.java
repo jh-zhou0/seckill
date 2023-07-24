@@ -5,7 +5,7 @@ package cn.zjh.seckill.common.model.message;
  * 
  * @author zjh - kayson
  */
-public class ErrorMessage {
+public class ErrorMessage extends TopicMessage {
 
     // 全局事务编号
     private Long txNo;
@@ -21,7 +21,8 @@ public class ErrorMessage {
     public ErrorMessage() {
     }
 
-    public ErrorMessage(Long txNo, Long goodsId, Integer quantity, String placeOrderType, Boolean exception) {
+    public ErrorMessage(String destination, Long txNo, Long goodsId, Integer quantity, String placeOrderType, Boolean exception) {
+        super(destination);
         this.txNo = txNo;
         this.goodsId = goodsId;
         this.quantity = quantity;

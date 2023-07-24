@@ -10,17 +10,16 @@ import cn.zjh.seckill.common.model.dto.SeckillGoodsDTO;
 import cn.zjh.seckill.common.model.message.TxMessage;
 import cn.zjh.seckill.common.utils.id.SnowFlakeFactory;
 import cn.zjh.seckill.dubbo.interfaces.goods.SeckillGoodsDubboService;
+import cn.zjh.seckill.mq.MessageSenderService;
 import cn.zjh.seckill.order.application.command.SeckillOrderCommand;
 import cn.zjh.seckill.order.application.place.SeckillPlaceOrderService;
 import cn.zjh.seckill.order.domain.model.entity.SeckillOrder;
 import cn.zjh.seckill.order.domain.service.SeckillOrderDomainService;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.dubbo.config.annotation.DubboReference;
-import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.messaging.Message;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,7 +37,7 @@ public class SeckillPlaceOrderLockService implements SeckillPlaceOrderService {
 
     public static final Logger logger = LoggerFactory.getLogger(SeckillPlaceOrderLockService.class);
 
-    @DubboReference(version = "1.0.0")
+    @DubboReference(version = "1.0.0", check = false)
     private SeckillGoodsDubboService seckillGoodsDubboService;
     @Resource
     private DistributedLockFactory distributedLockFactory;
@@ -47,7 +46,7 @@ public class SeckillPlaceOrderLockService implements SeckillPlaceOrderService {
     @Resource
     private SeckillOrderDomainService seckillOrderDomainService;
     @Resource
-    private RocketMQTemplate rocketMQTemplate;
+    private MessageSenderService messageSenderService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -91,16 +90,16 @@ public class SeckillPlaceOrderLockService implements SeckillPlaceOrderService {
             lock.unlock();
         }
         // 构建事务消息
-        Message<String> message = getTxMessage(txNo, userId, SeckillConstants.PLACE_ORDER_TYPE_LOCK, exception, seckillOrderCommand, seckillGoods);
+        TxMessage message = getTxMessage(SeckillConstants.TOPIC_TX_MSG, txNo, userId, SeckillConstants.PLACE_ORDER_TYPE_LOCK, exception, seckillOrderCommand, seckillGoods);
         // 发送事务消息
-        rocketMQTemplate.sendMessageInTransaction(SeckillConstants.TOPIC_TX_MSG, message, null);
+        messageSenderService.sendMessageInTransaction(message, null);
         return txNo;
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void saveOrderInTransaction(TxMessage txMessage) {
-        String orderTxKey = SeckillConstants.getKey(SeckillConstants.TX_MSG_KEY, String.valueOf(txMessage.getTxNo()));
+        String orderTxKey = SeckillConstants.getKey(SeckillConstants.ORDER_TX_KEY, String.valueOf(txMessage.getTxNo()));
         try {
             Boolean submitTransaction = distributedCacheService.hasKey(orderTxKey);
             if (Boolean.TRUE.equals(submitTransaction)) {

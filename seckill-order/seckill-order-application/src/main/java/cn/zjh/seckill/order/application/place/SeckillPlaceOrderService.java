@@ -1,6 +1,5 @@
 package cn.zjh.seckill.order.application.place;
 
-import cn.zjh.seckill.common.constants.SeckillConstants;
 import cn.zjh.seckill.common.exception.ErrorCode;
 import cn.zjh.seckill.common.exception.SeckillException;
 import cn.zjh.seckill.common.model.dto.SeckillGoodsDTO;
@@ -11,9 +10,6 @@ import cn.zjh.seckill.common.utils.beans.BeanUtil;
 import cn.zjh.seckill.common.utils.id.SnowFlakeFactory;
 import cn.zjh.seckill.order.application.command.SeckillOrderCommand;
 import cn.zjh.seckill.order.domain.model.entity.SeckillOrder;
-import com.alibaba.fastjson.JSONObject;
-import org.springframework.messaging.Message;
-import org.springframework.messaging.support.MessageBuilder;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -103,13 +99,10 @@ public interface SeckillPlaceOrderService {
     /**
      * 构建事务消息
      */
-    default Message<String> getTxMessage(Long txNo, Long userId, String placeOrderType, Boolean exception, SeckillOrderCommand seckillOrderCommand, SeckillGoodsDTO seckillGoods) {
-        TxMessage txMessage = new TxMessage(txNo, seckillOrderCommand.getGoodsId(), seckillGoods.getGoodsName(), 
+    default TxMessage getTxMessage(String destination, Long txNo, Long userId, String placeOrderType, Boolean exception, SeckillOrderCommand seckillOrderCommand, SeckillGoodsDTO seckillGoods) {
+        return new TxMessage(destination, txNo, seckillOrderCommand.getGoodsId(), seckillGoods.getGoodsName(), 
                 seckillOrderCommand.getVersion(), seckillOrderCommand.getQuantity(), seckillOrderCommand.getActivityId(), 
                 userId, seckillGoods.getActivityPrice(), placeOrderType, exception);
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put(SeckillConstants.TX_MSG_KEY, txMessage);
-        return MessageBuilder.withPayload(jsonObject.toJSONString()).build();
     }
 
 }

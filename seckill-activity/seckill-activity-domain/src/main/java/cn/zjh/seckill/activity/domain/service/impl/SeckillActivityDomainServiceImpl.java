@@ -5,10 +5,10 @@ import cn.zjh.seckill.activity.domain.model.entity.SeckillActivity;
 import cn.zjh.seckill.activity.domain.repository.SeckillActivityRepository;
 import cn.zjh.seckill.activity.domain.service.SeckillActivityDomainService;
 import cn.zjh.seckill.common.constants.SeckillConstants;
-import cn.zjh.seckill.common.event.publisher.EventPublisher;
 import cn.zjh.seckill.common.exception.ErrorCode;
 import cn.zjh.seckill.common.exception.SeckillException;
 import cn.zjh.seckill.common.model.enums.SeckillActivityStatus;
+import cn.zjh.seckill.mq.MessageSenderService;
 import com.alibaba.fastjson.JSON;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,8 +32,8 @@ public class SeckillActivityDomainServiceImpl implements SeckillActivityDomainSe
     @Resource
     private SeckillActivityRepository seckillActivityRepository;
     @Resource
-    private EventPublisher eventPublisher;
-    @Value("${event.publish.type}")
+    private MessageSenderService messageSenderService;
+    @Value("${message.mq.type}")
     private String eventType;
 
     @Override
@@ -47,7 +47,7 @@ public class SeckillActivityDomainServiceImpl implements SeckillActivityDomainSe
         logger.info("SeckillActivityPublish|秒杀活动已发布|{}", seckillActivity.getId());
 
         SeckillActivityEvent seckillActivityEvent = new SeckillActivityEvent(seckillActivity.getId(), seckillActivity.getStatus(), getTopicEvent());
-        eventPublisher.publish(seckillActivityEvent);
+        messageSenderService.send(seckillActivityEvent);
         logger.info("SeckillActivityPublish|秒杀活动事件已发布|{}", JSON.toJSON(seckillActivityEvent));
     }
 
@@ -78,7 +78,7 @@ public class SeckillActivityDomainServiceImpl implements SeckillActivityDomainSe
         seckillActivityRepository.updateStatus(status, id);
         logger.info("SeckillActivityPublish|发布秒杀活动状态事件|{},{}", status, id);
         SeckillActivityEvent seckillActivityEvent = new SeckillActivityEvent(id, status, getTopicEvent());
-        eventPublisher.publish(seckillActivityEvent);
+        messageSenderService.send(seckillActivityEvent);
         logger.info("SeckillActivityPublish|秒杀活动事件已发布|{}", id);
     }
 

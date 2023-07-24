@@ -19,7 +19,7 @@ import javax.annotation.Resource;
  * @author zjh - kayson
  */
 @EventHandler
-@ConditionalOnProperty(name = "event.publish.type", havingValue = "cola")
+@ConditionalOnProperty(name = "message.mq.type", havingValue = "cola")
 public class SeckillActivityColaEventHandler implements EventHandlerI<Response, SeckillActivityEvent> {
 
     public static final Logger logger = LoggerFactory.getLogger(SeckillActivityColaEventHandler.class);

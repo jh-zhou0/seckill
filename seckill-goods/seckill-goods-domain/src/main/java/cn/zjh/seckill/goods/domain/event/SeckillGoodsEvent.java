@@ -1,6 +1,6 @@
 package cn.zjh.seckill.goods.domain.event;
 
-import cn.zjh.seckill.common.event.SeckillBaseEvent;
+import cn.zjh.seckill.common.model.event.SeckillBaseEvent;
 
 /**
  * 秒杀商品事件模型

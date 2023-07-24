@@ -15,6 +15,7 @@
         <module>seckill-goods</module>
         <module>seckill-dubbo-interfaces</module>
         <module>seckill-order</module>
+        <module>seckill-mq</module>
     </modules>
     <packaging>pom</packaging>
     

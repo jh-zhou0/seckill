@@ -20,13 +20,10 @@ import cn.zjh.seckill.goods.application.command.SeckillGoodsCommand;
 import cn.zjh.seckill.goods.application.service.SeckillGoodsService;
 import cn.zjh.seckill.goods.domain.model.entity.SeckillGoods;
 import cn.zjh.seckill.goods.domain.service.SeckillGoodsDomainService;
-import com.alibaba.fastjson.JSONObject;
+import cn.zjh.seckill.mq.MessageSenderService;
 import org.apache.dubbo.config.annotation.DubboReference;
-import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.messaging.Message;
-import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,7 +45,7 @@ public class SeckillGoodsServiceImpl implements SeckillGoodsService {
     
     @Resource
     private SeckillGoodsDomainService seckillGoodsDomainService;
-    @DubboReference(version = "1.0.0")
+    @DubboReference(version = "1.0.0", check = false)
     private SeckillActivityDubboService seckillActivityDubboService;
     @Resource
     private SeckillGoodsListCacheService seckillGoodsListCacheService;
@@ -59,7 +56,7 @@ public class SeckillGoodsServiceImpl implements SeckillGoodsService {
     @Resource
     private LocalCacheService<String, SeckillGoods> localCacheService;
     @Resource
-    private RocketMQTemplate rocketMQTemplate;
+    private MessageSenderService messageSenderService;
     
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -192,23 +189,20 @@ public class SeckillGoodsServiceImpl implements SeckillGoodsService {
                 distributedCacheService.put(goodsTxKey, String.valueOf(txMessage.getTxNo()), SeckillConstants.TX_LOG_EXPIRE_DAY, TimeUnit.DAYS);
             } else {
                 // 发送失败消息给订单微服务
-                rocketMQTemplate.send(SeckillConstants.TOPIC_ERROR_MSG, getErrorMessage(txMessage));
+                messageSenderService.send(getErrorMessage(txMessage));
             }
         } catch (Exception e) {
             // 发送失败消息给订单微服务
-            rocketMQTemplate.send(SeckillConstants.TOPIC_ERROR_MSG, getErrorMessage(txMessage));
+            messageSenderService.send(getErrorMessage(txMessage));
         }
     }
-    
+
     /**
-     * 构建订单微服务的错误消息
+     * 发送给订单微服务的错误消息
      */
-    private Message<String> getErrorMessage(TxMessage txMessage){
-        ErrorMessage errorMessage = new ErrorMessage(txMessage.getTxNo(), txMessage.getGoodsId(), 
+    private ErrorMessage getErrorMessage(TxMessage txMessage){
+        return new ErrorMessage(SeckillConstants.TOPIC_ERROR_MSG, txMessage.getTxNo(), txMessage.getGoodsId(), 
                 txMessage.getQuantity(), txMessage.getPlaceOrderType(), txMessage.getException());
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put(SeckillConstants.ERROR_MSG_KEY, errorMessage);
-        return MessageBuilder.withPayload(jsonObject.toJSONString()).build();
     }
     
 }

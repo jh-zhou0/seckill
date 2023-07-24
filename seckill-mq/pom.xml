@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>seckill-dubbo-interfaces</artifactId>
+    <artifactId>seckill-mq</artifactId>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
@@ -18,37 +18,32 @@
     </properties>
     
     <dependencies>
+        <!-- RocketMQ-->
         <dependency>
-            <groupId>cn.zjh.seckill</groupId>
-            <artifactId>seckill-mq</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        
-        <!-- dubbo -->
-        <dependency>
-            <groupId>org.apache.dubbo</groupId>
-            <artifactId>dubbo-spring-boot-starter</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.dubbo</groupId>
-            <artifactId>dubbo-registry-nacos</artifactId>
+            <groupId>org.apache.rocketmq</groupId>
+            <artifactId>rocketmq-spring-boot-starter</artifactId>
+            <version>${rocketmq.version}</version>
             <exclusions>
                 <exclusion>
-                    <groupId>org.apache.dubbo</groupId>
-                    <artifactId>dubbo-common</artifactId>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter</artifactId>
                 </exclusion>
                 <exclusion>
-                    <groupId>org.apache.dubbo</groupId>
-                    <artifactId>dubbo-remoting-api</artifactId>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-core</artifactId>
                 </exclusion>
                 <exclusion>
-                    <groupId>log4j</groupId>
-                    <artifactId>log4j</artifactId>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-webmvc</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
-        
+
+        <dependency>
+            <groupId>cn.zjh.seckill</groupId>
+            <artifactId>seckill-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
 </project>

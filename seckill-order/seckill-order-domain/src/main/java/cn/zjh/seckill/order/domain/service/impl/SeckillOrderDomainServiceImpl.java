@@ -1,10 +1,10 @@
 package cn.zjh.seckill.order.domain.service.impl;
 
 import cn.zjh.seckill.common.constants.SeckillConstants;
-import cn.zjh.seckill.common.event.publisher.EventPublisher;
 import cn.zjh.seckill.common.exception.ErrorCode;
 import cn.zjh.seckill.common.exception.SeckillException;
 import cn.zjh.seckill.common.model.enums.SeckillOrderStatus;
+import cn.zjh.seckill.mq.MessageSenderService;
 import cn.zjh.seckill.order.domain.event.SeckillOrderEvent;
 import cn.zjh.seckill.order.domain.model.entity.SeckillOrder;
 import cn.zjh.seckill.order.domain.repository.SeckillOrderRepository;
@@ -31,8 +31,8 @@ public class SeckillOrderDomainServiceImpl implements SeckillOrderDomainService 
     @Resource
     private SeckillOrderRepository seckillOrderRepository;
     @Resource
-    private EventPublisher eventPublisher;
-    @Value("${event.publish.type}")
+    private MessageSenderService messageSenderService;
+    @Value("${message.mq.type}")
     private String eventType;
     
     @Override
@@ -46,7 +46,7 @@ public class SeckillOrderDomainServiceImpl implements SeckillOrderDomainService 
         if (isSuccess) {
             logger.info("saveSeckillOrder|创建订单成功|{}", JSON.toJSONString(seckillOrder));
             SeckillOrderEvent seckillOrderEvent = new SeckillOrderEvent(seckillOrder.getId(), seckillOrder.getStatus(), getTopicEvent());
-            eventPublisher.publish(seckillOrderEvent);
+            messageSenderService.send(seckillOrderEvent);
         }
     }
 
@@ -74,7 +74,7 @@ public class SeckillOrderDomainServiceImpl implements SeckillOrderDomainService 
         if (seckillOrderRepository.deleteSeckillOrder(orderId)) {
             logger.info("deleteSeckillOrder|删除订单成功|{}", orderId);
             SeckillOrderEvent seckillOrderEvent = new SeckillOrderEvent(orderId, SeckillOrderStatus.DELETED.getCode(), getTopicEvent());
-            eventPublisher.publish(seckillOrderEvent);
+            messageSenderService.send(seckillOrderEvent);
         }
     }
 
