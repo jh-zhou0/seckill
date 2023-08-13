@@ -22,11 +22,11 @@ public class SeckillGoodsRepositoryImpl implements SeckillGoodsRepository {
     private SeckillGoodsMapper seckillGoodsMapper;
 
     @Override
-    public void saveSeckillGoods(SeckillGoods seckillGoods) {
+    public int saveSeckillGoods(SeckillGoods seckillGoods) {
         if (seckillGoods == null) {
             throw new SeckillException(ErrorCode.PARAMS_INVALID);
         }
-        seckillGoodsMapper.saveSeckillGoods(seckillGoods);
+        return seckillGoodsMapper.saveSeckillGoods(seckillGoods);
     }
 
     @Override

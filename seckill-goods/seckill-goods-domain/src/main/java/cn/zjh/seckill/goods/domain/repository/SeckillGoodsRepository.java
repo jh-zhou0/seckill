@@ -14,7 +14,7 @@ public interface SeckillGoodsRepository {
     /**
      * 保存商品信息
      */
-    void saveSeckillGoods(SeckillGoods seckillGoods);
+    int saveSeckillGoods(SeckillGoods seckillGoods);
 
     /**
      * 根据id获取商品详细信息

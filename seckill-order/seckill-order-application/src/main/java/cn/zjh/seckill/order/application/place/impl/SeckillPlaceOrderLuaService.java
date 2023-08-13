@@ -54,6 +54,7 @@ public class SeckillPlaceOrderLuaService implements SeckillPlaceOrderService {
         long txNo = SnowFlakeFactory.getSnowFlakeFromCache().nextId();
         // 获取库存key
         String stockKey = SeckillConstants.getKey(SeckillConstants.GOODS_ITEM_STOCK_KEY_PREFIX, String.valueOf(seckillOrderCommand.getGoodsId()));
+        Long decrementResult = 0L;
         try {
             // 获取商品限购信息
             String limitKey = SeckillConstants.getKey(SeckillConstants.GOODS_ITEM_LIMIT_KEY_PREFIX, String.valueOf(seckillOrderCommand.getGoodsId()));
@@ -66,12 +67,15 @@ public class SeckillPlaceOrderLuaService implements SeckillPlaceOrderService {
                 throw new SeckillException(ErrorCode.BEYOND_LIMIT_NUM);
             }
             // 扣减缓存中的库存
-            Long result = distributedCacheService.decrementByLua(stockKey, seckillOrderCommand.getQuantity());
+            decrementResult = distributedCacheService.decrementByLua(stockKey, seckillOrderCommand.getQuantity());
             // 检查lua脚本执行结果
-            checkResult(result);
+            checkResult(decrementResult);
         } catch (Exception e) {
             logger.error("SeckillPlaceOrderLuaService|下单异常|参数:{}|异常信息:{}", JSONObject.toJSONString(seckillOrderCommand), e.getMessage());
             exception = true;
+            if (decrementResult == SeckillConstants.LUA_RESULT_EXECUTE_TOKEN_SUCCESS) {
+                distributedCacheService.incrementByLua(stockKey, seckillOrderCommand.getQuantity());
+            }
         }
         // 构建事务消息
         TxMessage message = getTxMessage(SeckillConstants.TOPIC_TX_MSG, txNo, userId, SeckillConstants.PLACE_ORDER_TYPE_LUA, exception, seckillOrderCommand, seckillGoods);

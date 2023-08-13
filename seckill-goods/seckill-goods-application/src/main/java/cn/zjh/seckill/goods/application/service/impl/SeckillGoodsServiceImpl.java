@@ -74,14 +74,16 @@ public class SeckillGoodsServiceImpl implements SeckillGoodsService {
         seckillGoods.setEndTime(seckillActivity.getEndTime());
         seckillGoods.setAvailableStock(seckillGoodsCommand.getInitialStock());
         seckillGoods.setStatus(SeckillGoodsStatus.PUBLISHED.getCode());
-        // 将商品的库存同步到redis
-        String stockKey = SeckillConstants.getKey(SeckillConstants.GOODS_ITEM_STOCK_KEY_PREFIX, String.valueOf(seckillGoods.getId()));
-        distributedCacheService.put(stockKey, seckillGoods.getAvailableStock());
-        // 将商品限购同步到Redis
-        String limitKey = SeckillConstants.getKey(SeckillConstants.GOODS_ITEM_LIMIT_KEY_PREFIX, String.valueOf(seckillGoods.getId()));
-        distributedCacheService.put(limitKey, seckillGoods.getLimitNum());
         // 保存商品
-        seckillGoodsDomainService.saveSeckillGoods(seckillGoods);
+        boolean success = seckillGoodsDomainService.saveSeckillGoods(seckillGoods);
+        if (success) {
+            // 将商品的库存同步到redis
+            String stockKey = SeckillConstants.getKey(SeckillConstants.GOODS_ITEM_STOCK_KEY_PREFIX, String.valueOf(seckillGoods.getId()));
+            distributedCacheService.put(stockKey, seckillGoods.getAvailableStock());
+            // 将商品限购同步到Redis
+            String limitKey = SeckillConstants.getKey(SeckillConstants.GOODS_ITEM_LIMIT_KEY_PREFIX, String.valueOf(seckillGoods.getId()));
+            distributedCacheService.put(limitKey, seckillGoods.getLimitNum());
+        }
     }
 
     @Override
