@@ -21,8 +21,8 @@ import javax.annotation.Resource;
 @Component
 @RocketMQMessageListener(consumerGroup = SeckillConstants.TX_GOODS_CONSUMER_GROUP, topic = SeckillConstants.TOPIC_TX_MSG)
 public class GoodsTxMessageListener implements RocketMQListener<String> {
-    
-    public static final Logger logger = LoggerFactory.getLogger(GoodsTxMessageListener.class);
+
+    private static final Logger logger = LoggerFactory.getLogger(GoodsTxMessageListener.class);
     
     @Resource
     private SeckillGoodsService seckillGoodsService;

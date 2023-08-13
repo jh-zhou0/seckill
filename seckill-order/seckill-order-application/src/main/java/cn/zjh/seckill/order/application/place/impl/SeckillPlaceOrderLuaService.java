@@ -33,7 +33,7 @@ import java.util.concurrent.TimeUnit;
 @ConditionalOnProperty(name = "place.order.type", havingValue = "lua")
 public class SeckillPlaceOrderLuaService implements SeckillPlaceOrderService {
 
-    public static final Logger logger = LoggerFactory.getLogger(SeckillPlaceOrderLuaService.class);
+    private static final Logger logger = LoggerFactory.getLogger(SeckillPlaceOrderLuaService.class);
 
     @DubboReference(version = "1.0.0", check = false)
     private SeckillGoodsDubboService seckillGoodsDubboService;

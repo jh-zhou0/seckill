@@ -28,7 +28,7 @@ import java.util.List;
 @Service
 public class SeckillOrderServiceImpl implements SeckillOrderService {
 
-    public static final Logger logger = LoggerFactory.getLogger(SeckillOrderServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(SeckillOrderServiceImpl.class);
 
     @Resource
     private SeckillOrderDomainService seckillOrderDomainService;

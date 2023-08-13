@@ -25,7 +25,7 @@ import javax.annotation.Resource;
 @RocketMQMessageListener(consumerGroup = SeckillConstants.EVENT_ACTIVITY_CONSUMER_GROUP, topic = SeckillConstants.TOPIC_EVENT_ROCKETMQ_ACTIVITY)
 public class SeckillActivityRocketMQEventHandler implements RocketMQListener<String> {
 
-    public static final Logger logger = LoggerFactory.getLogger(SeckillActivityRocketMQEventHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(SeckillActivityRocketMQEventHandler.class);
 
     @Resource
     private SeckillActivityCacheService seckillActivityCacheService;

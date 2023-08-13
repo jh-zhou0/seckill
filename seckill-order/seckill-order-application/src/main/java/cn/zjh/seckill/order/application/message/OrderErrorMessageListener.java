@@ -22,7 +22,7 @@ import javax.annotation.Resource;
 @RocketMQMessageListener(consumerGroup = SeckillConstants.TX_ORDER_CONSUMER_GROUP, topic = SeckillConstants.TOPIC_ERROR_MSG)
 public class OrderErrorMessageListener implements RocketMQListener<String> {
 
-    public static final Logger logger = LoggerFactory.getLogger(OrderErrorMessageListener.class);
+    private static final Logger logger = LoggerFactory.getLogger(OrderErrorMessageListener.class);
     
     @Resource
     private SeckillOrderService seckillOrderService;

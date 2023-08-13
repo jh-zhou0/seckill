@@ -17,8 +17,8 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 @EventHandler
 @ConditionalOnProperty(name = "message.mq.type", havingValue = "cola")
 public class SeckillOrderColaEventHandler implements EventHandlerI<Response, SeckillOrderEvent> {
-    
-    public static final Logger logger = LoggerFactory.getLogger(SeckillOrderColaEventHandler.class);
+
+    private static final Logger logger = LoggerFactory.getLogger(SeckillOrderColaEventHandler.class);
     
     @Override
     public Response execute(SeckillOrderEvent seckillOrderEvent) {

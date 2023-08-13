@@ -24,8 +24,8 @@ import javax.annotation.Resource;
 @ConditionalOnProperty(name = "message.mq.type", havingValue = "rocketmq")
 @RocketMQMessageListener(consumerGroup = SeckillConstants.EVENT_GOODS_CONSUMER_GROUP, topic = SeckillConstants.TOPIC_EVENT_ROCKETMQ_GOODS)
 public class SeckillGoodsRocketMQEventHandler implements RocketMQListener<String> {
-    
-    public static final Logger logger = LoggerFactory.getLogger(SeckillGoodsRocketMQEventHandler.class);
+
+    private static final Logger logger = LoggerFactory.getLogger(SeckillGoodsRocketMQEventHandler.class);
 
     @Resource
     private SeckillGoodsCacheService seckillGoodsCacheService;

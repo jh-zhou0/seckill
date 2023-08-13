@@ -21,8 +21,8 @@ import org.springframework.stereotype.Component;
 @ConditionalOnProperty(name = "message.mq.type", havingValue = "rocketmq")
 @RocketMQMessageListener(consumerGroup = SeckillConstants.EVENT_ORDER_CONSUMER_GROUP, topic = SeckillConstants.TOPIC_EVENT_ROCKETMQ_ORDER)
 public class SeckillOrderRocketMQEventHandler implements RocketMQListener<String> {
-    
-    public static final Logger logger = LoggerFactory.getLogger(SeckillOrderRocketMQEventHandler.class);
+
+    private static final Logger logger = LoggerFactory.getLogger(SeckillOrderRocketMQEventHandler.class);
     
     @Override
     public void onMessage(String message) {

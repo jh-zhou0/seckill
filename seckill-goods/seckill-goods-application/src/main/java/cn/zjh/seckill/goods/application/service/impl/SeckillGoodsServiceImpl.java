@@ -40,8 +40,8 @@ import java.util.stream.Collectors;
  */
 @Service
 public class SeckillGoodsServiceImpl implements SeckillGoodsService {
-    
-    public static final Logger logger = LoggerFactory.getLogger(SeckillGoodsServiceImpl.class);
+
+    private static final Logger logger = LoggerFactory.getLogger(SeckillGoodsServiceImpl.class);
     
     @Resource
     private SeckillGoodsDomainService seckillGoodsDomainService;

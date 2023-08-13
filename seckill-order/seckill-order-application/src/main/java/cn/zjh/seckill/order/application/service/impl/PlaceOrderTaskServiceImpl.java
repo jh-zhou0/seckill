@@ -29,8 +29,8 @@ import java.util.concurrent.locks.ReentrantLock;
 @Service
 @ConditionalOnProperty(name = "submit.order.type", havingValue = "async")
 public class PlaceOrderTaskServiceImpl implements PlaceOrderTaskService {
-    
-    public static final Logger logger = LoggerFactory.getLogger(PlaceOrderTaskServiceImpl.class);
+
+    private static final Logger logger = LoggerFactory.getLogger(PlaceOrderTaskServiceImpl.class);
     
     @Resource
     private DistributedCacheService distributedCacheService;

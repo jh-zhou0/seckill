@@ -22,7 +22,7 @@ import javax.annotation.Resource;
 @ConditionalOnProperty(name = "message.mq.type", havingValue = "cola")
 public class SeckillActivityColaEventHandler implements EventHandlerI<Response, SeckillActivityEvent> {
 
-    public static final Logger logger = LoggerFactory.getLogger(SeckillActivityColaEventHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(SeckillActivityColaEventHandler.class);
 
     @Resource
     private SeckillActivityCacheService seckillActivityCacheService;

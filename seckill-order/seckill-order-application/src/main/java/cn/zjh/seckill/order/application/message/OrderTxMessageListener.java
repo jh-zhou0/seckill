@@ -25,7 +25,7 @@ import javax.annotation.Resource;
 @RocketMQTransactionListener
 public class OrderTxMessageListener implements RocketMQLocalTransactionListener {
 
-    public static final Logger logger = LoggerFactory.getLogger(OrderTxMessageListener.class);
+    private static final Logger logger = LoggerFactory.getLogger(OrderTxMessageListener.class);
 
     @Resource
     private SeckillPlaceOrderService seckillPlaceOrderService;

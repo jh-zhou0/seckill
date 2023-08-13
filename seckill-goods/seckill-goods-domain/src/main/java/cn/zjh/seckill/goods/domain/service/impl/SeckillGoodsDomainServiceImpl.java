@@ -25,8 +25,8 @@ import java.util.List;
  */
 @Service
 public class SeckillGoodsDomainServiceImpl implements SeckillGoodsDomainService {
-    
-    public static final Logger logger = LoggerFactory.getLogger(SeckillGoodsDomainServiceImpl.class);
+
+    private static final Logger logger = LoggerFactory.getLogger(SeckillGoodsDomainServiceImpl.class);
     
     @Resource
     private SeckillGoodsRepository seckillGoodsRepository;

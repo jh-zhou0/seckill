@@ -30,7 +30,7 @@ import java.util.concurrent.locks.ReentrantLock;
 @Service
 public class SeckillActivityCacheServiceImpl implements SeckillActivityCacheService {
 
-    public static final Logger logger = LoggerFactory.getLogger(SeckillActivityCacheServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(SeckillActivityCacheServiceImpl.class);
     // 分布式锁的key
     private static final String SECKILL_ACTIVITY_UPDATE_CACHE_LOCK_KEY = "SECKILL_ACTIVITY_UPDATE_CACHE_LOCK_KEY_";
     // 本地锁
