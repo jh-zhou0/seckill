@@ -16,6 +16,7 @@
         <module>seckill-dubbo-interfaces</module>
         <module>seckill-order</module>
         <module>seckill-mq</module>
+        <module>seckill-stock</module>
     </modules>
     <packaging>pom</packaging>
     
@@ -52,6 +53,7 @@
         <dubbo3.version>3.0.7</dubbo3.version>
         <hmily.version>2.1.2</hmily.version>
         <aspectj.version>1.9.2</aspectj.version>
+        <sharding.jdbc.version>4.1.1</sharding.jdbc.version>
         <docker.image.prefix>seckill</docker.image.prefix>
     </properties>
 

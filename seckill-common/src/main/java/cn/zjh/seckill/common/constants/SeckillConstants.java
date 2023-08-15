@@ -148,6 +148,16 @@ public class SeckillConstants {
     public static final String TOPIC_EVENT_ROCKETMQ_ORDER = "topic_event_rocketmq_order";
 
     /**
+     * 库存事件消息topic
+     */
+    public static final String TOPIC_EVENT_ROCKETMQ_STOCK = "topic_event_rocketmq_stock";
+
+    /**
+     * 库存消费分组
+     */
+    public static final String EVENT_STOCK_CONSUMER_GROUP = "event_stock_consumer_group";
+
+    /**
      * 订单消费分组
      */
     public static final String EVENT_ORDER_CONSUMER_GROUP = "event_order_consumer_group";
@@ -223,6 +233,26 @@ public class SeckillConstants {
     public static final String GOODS_ITEM_STOCK_KEY_PREFIX = "item:stock:";
 
     /**
+     * 商品库存编排
+     */
+    public static final String GOODS_STOCK_BUCKETS_SUSPEND_KEY = "goods:buckets:suspend:";
+
+    /**
+     * 分桶库存
+     */
+    public static final String GOODS_BUCKET_AVAILABLE_STOCKS_KEY = "goods:buckets:available:";
+
+    /**
+     * 分桶编排
+     */
+    public static final String GOODS_BUCKET_ARRANGEMENT_KEY = "goods:buckets:arrangement:";
+
+    /**
+     * 商品库存分桶数量
+     */
+    public static final String GOODS_BUCKETS_QUANTITY_KEY = "goods:buckets:quantity:";
+
+    /**
      * 商品限购数量Key
      */
     public static final String GOODS_ITEM_LIMIT_KEY_PREFIX = "item:limit:";
@@ -274,5 +304,7 @@ public class SeckillConstants {
 
     public static final String SECKILL_GOODS_CACHE_KEY = "SECKILL_GOODS_CACHE_KEY";
     public static final String SECKILL_GOODSES_CACHE_KEY = "SECKILL_GOODSES_CACHE_KEY";
+
+    public static final String SECKILL_STOCK_CACHE_KEY = "SECKILL_STOCK_CACHE_KEY";
 
 }
